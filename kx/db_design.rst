@@ -2,7 +2,7 @@
 一些设计细节
 =======================
 
-:Author: Gao Peng <gaopeng@corp.kaixin001.com>
+:Author: Gao Peng <funky.gao@gmail.com>
 
 .. contents:: Table Of Contents
 .. section-numbering::
