@@ -85,9 +85,9 @@
 
     CREATE TABLE s_user_visitor_0 (
         uid int NOT NULL default '0' COMMENT 'SPLIT_KEY',
-        total int NOT NULL default 0,             -- 总的访问人次
+        total int NOT NULL default 0, -- 总的访问人次
         mtime timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-        data blob NOT NULL default '',                -- 最近去访的N个用户及时间
+        data blob NOT NULL default '', -- 最近去访的N个用户及时间，每个用户8位
         UNIQUE KEY(`uid`)
     )
 
