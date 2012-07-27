@@ -180,6 +180,20 @@ cron with exclusive lock
 定时job
 =============
 
+- CDN速度监测
+
+- 监测iphone push
+
+  /usr/local/nagios/libexec/check_tcp -H gateway.push.apple.com -p 2195 -t 5
+
+- 监测php error log
+
+- disk monitor
+
+- mc monitor
+
+- mysql monitor
+
 
 拼音转汉字
 =============
