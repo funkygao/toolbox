@@ -63,6 +63,26 @@
 
   用户信息修改表
 
+- s_user_regip_0
+
+  用户注册 IP 表
+
+- s_user_mayknown_0
+
+  用户可能认识的人
+
+- s_user_login_YYMMDD
+
+  用户登录记录，每天一个表，用来统计活跃用户信息
+
+- s_ip_login_YYMMDD
+
+  IP登录记录,每天一个表
+
+- s_user_login_record_0
+
+  登录记录, 最多三次左右就可以了
+
 
 好友关系表的设计
 =====================
