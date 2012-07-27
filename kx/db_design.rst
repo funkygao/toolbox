@@ -137,3 +137,16 @@ updateTime太老的记录定时从表中删除以减小表的占用空间
 
 拼音转汉字
 =============
+
+
+Push Server
+===========
+
+PServer 中间层
+
+- push to mobile
+
+
+- push to web
+
+  
