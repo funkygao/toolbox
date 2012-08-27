@@ -144,7 +144,7 @@ updateTime太老的记录定时从表中删除以减小表的占用空间
         updateTime timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
         PRIMARY KEY(uid),
         INDEX(updateTime)
-    )
+    ) ENGINE=MEMORY;
 
 
 机器人
