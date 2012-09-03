@@ -19,7 +19,10 @@ def hot(ups, downs, post_date):
     order = log10(z) # 意味着z=10可以得到1分，z=100可以得到2分
     sign = 1 if s > 0 else -1 if s < 0 else 0 # 表示对文章的总体看法，总体是正面的还是负面的
     seconds = epoch_seconds(post_date) - 1134028003 # 1134028003是reddit公司成立的日期
-    return order + sign * seconds / 45000 # 
+
+    # 45000秒=12.5小时，就是说后1天的帖子会比前一天多2分
+    # 即如果前一天的帖子如果在第二天还想保持同样的分值，它的order值要增加2，即净赞值增加100倍
+    return order + sign * seconds / 45000 
 
 def confidence(ups, downs):
     """The confidence sort.
