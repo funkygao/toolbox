@@ -44,12 +44,13 @@ if __name__ == '__main__':
     fixtures = [
         (156, 45, datetime(2012, 8, 23)),
         (156, 45, datetime(2012, 8, 24)),
+        (1560, 450, datetime(2012, 8, 24)),
         (1560, 45, datetime(2012, 8, 24)),
         (156000, 45, datetime(2012, 8, 22)),
         (45, 156, datetime(2012, 8, 23)),
     ]
     for (ups, downs, post_date) in fixtures:
-        print hot(ups, downs, post_date)
+        print ups, downs, post_date, '->', hot(ups, downs, post_date)
 
     print '-' * 30
 
