@@ -5,12 +5,13 @@ import (
     "fmt"
     "os"
     "io"
+    "runtime"
 )
 
 func fetchHtml(url string) {
     resp, err := http.Get(url)
     if err != nil {
-        fmt.Println("error occured")
+        panic(err)
     } else {
         defer resp.Body.Close()
 
@@ -21,6 +22,8 @@ func fetchHtml(url string) {
 func main() {
     const url = "http://www.kaixin001.com"
     const loops = 2250
+
+    runtime.GOMAXPROCS(100)
     
     for i:=0; i<loops; i++ {
         go fetchHtml(url)
