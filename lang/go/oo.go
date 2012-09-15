@@ -1,0 +1,31 @@
+/*
+ * Simulation of OO
+ */
+package main
+
+import "fmt"
+
+type Point struct {
+    x, y int
+}
+
+func (p *Point) Get() (int, int) {
+    return p.x, p.y
+}
+
+func (p *Point) Put(x, y int) {
+    p.x, p.y = x, y
+}
+
+func (p *Point) add(x, y int) (int, int) {
+    // by convention, non capital letter started method is private
+    return p.x + x, p.y + y
+}
+
+func main() {
+    p := Point{1, 3}
+    fmt.Println(p.Get())
+    x, y := p.add(1, 1)
+    println(x, y)
+}
+
