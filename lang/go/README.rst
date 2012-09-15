@@ -14,7 +14,11 @@ Command
 
 ::
 
+    go build my.go
+
     go run my.go
+
+    go doc builtin
 
     godoc fmt Println
 
@@ -32,6 +36,48 @@ Syntax
 - multiple return value
 
 - type infer
+
+- 类型后置
+
+  var foo int
+
+
+Builtin func
+------------
+
+- close
+
+  关闭chan
+
+- new
+
+  用于各种类型的内存分配
+
+- make
+
+  用于内建类型的内存分配
+
+- delete
+
+  on map
+
+- copy
+
+  copy slice
+
+- append
+
+  append to slice
+
+- panic
+
+  recover
+
+- println
+
+  print
+
+- len
 
 
 defer
