@@ -22,10 +22,27 @@ func (p *Point) add(x, y int) (int, int) {
     return p.x + x, p.y + y
 }
 
+type PointChild struct {
+    Point // anonymous field
+    z int
+}
+
+func (p *PointChild) Get() (int, int, int) {
+    return p.x, p.y, p.z
+}
+
+type Pointer interface {
+    Get() (int, int)
+    Put(x, y int)
+}
+
 func main() {
     p := Point{1, 3}
     fmt.Println(p.Get())
     x, y := p.add(1, 1)
     println(x, y)
+
+    p1 := PointChild{p, 5}
+    fmt.Println(p1.Get())
 }
 
