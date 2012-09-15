@@ -25,6 +25,17 @@ class Demo(object):
         #plt.savefig('_demo.png')
         plt.show()
 
+    def demo_math(self):
+        x = np.linspace(0, 10, 1000)
+        y = np.sin(x)
+        z = np.cos(x ** 2)
+        plt.figure('math', figsize=(8,4))
+        plt.plot(x, y, label='sin(x)', linewidth=2)
+        plt.plot(x, z, label='cos(x^2)')
+        plt.ylim(-2, 2)
+        plt.legend()
+        plt.show()
+
     def web_scraping(self, url = "http://it.wikipedia.org/wiki/Demografia_d'Italia"):
         user_agent = 'Mozilla/5.0 (compatible; MSIE 5.5; Windows NT)'
         headers = {'User-Agent': user_agent}
@@ -58,5 +69,6 @@ class Demo(object):
 
 if __name__ == '__main__':
     demo = Demo()
+    demo.demo_math()
     demo.web_scraping()
     demo.simplest()
