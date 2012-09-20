@@ -120,3 +120,22 @@ chan
 
 GC
 --
+
+
+Usage
+=====
+
+分组
+--------
+
+::
+
+    import (
+        "fmt"
+        "os"
+    )
+
+    const (
+        PI = 3.14
+        PREFIX = "go_"
+    )
