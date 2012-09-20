@@ -44,5 +44,13 @@ func main() {
 
     p1 := PointChild{p, 5}
     fmt.Println(p1.Get())
+    fmt.Println(p1.x)
+
+    var p2 Point
+    p2.x, p2.y = 4, 5
+    fmt.Println(p2)
+
+    p3 := Point{x: 6, y: 9}
+    fmt.Println(p3)
 }
 
