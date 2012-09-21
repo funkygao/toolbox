@@ -1,6 +1,8 @@
-/**
- * 检查每个人曾经提交过的文件的数量，排序输出
- */
+/*
+检查git repo里每个人曾经提交过的文件的数量，排序输出
+
+通过本工具，可以简单地看到开发团队里哪些人控制更多的源代码
+*/
 package main
 
 import (
@@ -15,10 +17,8 @@ import (
     "flag"
 )
 
-/**
- * 获取某个用户的提交过的文件数量
- */
-func filesOfUser(username string) int {
+// 获取某个用户的提交过的文件数量
+func FilesOfUser(username string) int {
     git := fmt.Sprintf("git log --author=%s --pretty=%%H | while read commit_hash; do git show --oneline --name-only $commit_hash | tail -n+2; done | sort | uniq | wc -l", username)
     out, err := exec.Command("sh", "-c", git).Output()
     if err != nil {
@@ -118,7 +118,23 @@ func topUsers(concurrent int) map[string] int {
         }
     }
 
-    return r
+     c := make(chan map[string] int)
+     go collectResult(usercount, channels, c)
+
+    return <- c
+}
+
+func collectResult(usercount int, channels chan map[string] int, c chan map[string] int) {
+    r := make(map[string] int) // result
+    for i := 0; i < usercount; i++ {
+        chunkResult := <- channels
+        fmt.Println("<-msg:", chunkResult)
+        for k, v := range chunkResult {
+            r[k] = v
+        }
+    }
+
+    c <- r
 }
 
 func printNamesInChunk(chunk int, names []string) {
