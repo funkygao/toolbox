@@ -53,9 +53,22 @@ Builtin func
 
   用于各种类型的内存分配
 
+  new(T) allocates zeroed storage for a new item of type T and returns its address, a value of type `*T`
+
+  ::
+
+        p := new(SyncedBuffer) // type *SyncedBuffer
+        var p SyncedBuffer     // type SyncedBuffer
+
 - make
 
-  用于内建类型的内存分配
+  用于内建类型的内存分配，仅用于slice, map, channel
+
+  it returns an initialized (not zeroed) value of type T (not `*T`)
+
+  ::
+
+        var v []int = make([]int, 100) // the slice v now refers to a new array of 100 ints
 
 - delete
 
@@ -67,7 +80,8 @@ Builtin func
 
 - append
 
-  append to slice
+  Append the elements to the end of the slice and return the result
+
 
 - panic
 
@@ -98,10 +112,23 @@ recover
 
 goroutine
 ---------
+It originates in Hoare's Communicating Sequential Processes (CSP), it can also be seen as a type-safe generalization of Unix pipes.
+
+It is a function executing concurrently with other goroutines in the same address space. 
+
+It is lightweight, costing little more than the allocation of stack space. 
+And the stacks start small, so they are cheap, and grow by allocating (and freeing) heap storage as required.
+
+Goroutines are multiplexed onto multiple OS threads.
 
 ::
 
-    go myfunc()
+    go myfunc() // similar to the Unix shell's & notation for running a command in the background
+
+    go func(delay int) {
+        time.Sleep(delay)
+        fmt.Println(msg)
+    }(10)
 
 
 chan
@@ -154,4 +181,13 @@ Redeclaration
     a, b := 1, 2
     a, b := 1, 5
 
+If
+--
+
+::
+
+    // valid
+    if a := 1; a < 10 {
+        println("ok")
+    }
 
