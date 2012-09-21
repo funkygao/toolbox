@@ -1,16 +1,95 @@
 package main
 
 import "fmt"
+import "os"
 
 func main() {
-    demoArray()
-    demoNestedArray()
-    demoMap()
-    x, y := demoFunc(8, "go")
+    demoIf("if")
+    demoSwitch("switch")
+    demoArray("array")
+    demoNestedArray("nested array")
+    demoMap("map")
+    demoOs("os package")
+    demoAppend("append")
+    demoChannel("channel")
+    x, y := demoFunc(8, "go", "func")
     println(x, y)
 }
 
-func demoArray() {
+func demoChannel(tag string) {
+    printDemoFeature(tag)
+
+    c := make(chan int)
+    go func() {
+        s := 0
+        for i:=0;i<2000000000;i++ {
+            s ++
+        }
+        println(s)
+
+        c <- 1 // Send a signal, value does not matter
+    }()
+
+    <- c
+}
+
+func demoAppend(tag string) {
+    printDemoFeature(tag)
+
+    x := []int{1, 5, 8}
+    x = append(x, 4, 5, 6)
+    fmt.Println(x)
+}
+
+func printDemoFeature(tag string) {
+    println("\n\n", "Demo of", tag)
+    for i := 0; i < 40; i++ {
+        print("-")
+    }
+    println("\n")
+}
+
+func demoOs(tag string) {
+    printDemoFeature(tag)
+
+    fmt.Fprint(os.Stdout, "demoOs, haha ", 12, "\n")
+    fmt.Println(fmt.Sprintf("%d is > %d\n", 5, 2))
+}
+
+func demoIf(tag string) {
+    printDemoFeature(tag)
+
+    if x := 5; x < 10 {
+        println("If demo")
+    }
+}
+
+func demoSwitch(tag string) {
+    printDemoFeature(tag)
+
+    n := 10
+    switch n {
+    case 1, 5, 11:
+        println("oh")
+        break
+    case 4, 10:
+        println("omg")
+        break
+    }
+
+    switch {
+    case n < 5:
+        println(n, "<5")
+        break
+    case n >= 5:
+        println(n, ">=5")
+        break
+    }
+}
+
+func demoArray(tag string) {
+    printDemoFeature(tag)
+
     var arr [10]int // 数组是不能变长的
     arr[0], arr[1] = 6, 9
     fmt.Printf("%d, %d, len=%d\n", arr[0], arr[1], len(arr))
@@ -22,14 +101,18 @@ func demoArray() {
     fmt.Println(bar)
 }
 
-func demoNestedArray() {
+func demoNestedArray(tag string) {
+    printDemoFeature(tag)
+
     var arr [10][5]int
     foo := [2][3]int {[3]int{2, 3, 4}, [3]int{7,8,9}}
 
     fmt.Println(arr, foo)
 }
 
-func demoMap() {
+func demoMap(tag string) {
+    printDemoFeature(tag)
+
     var users map[int] string
     users = make(map[int]string)
     users[1] = "gaopeng"
@@ -40,6 +123,13 @@ func demoMap() {
     fmt.Println(users, len(users))
 }
 
-func demoFunc(x int, y string) (string, int) {
+func demoFunc(x int, y string, tag string) (string, int) {
+    printDemoFeature(tag)
+
     return "we", 3
 }
+
+func init() {
+    println("=============\ninit called\n=============")
+}
+
