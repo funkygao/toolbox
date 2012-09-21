@@ -11,14 +11,18 @@ package main
 
 import "fmt"
 
+// Point stands for a location with x and y dimensions
 type Point struct {
     x, y int
 }
 
-func (p *Point) Get() (int, int) {
+// Get the location of a Point.
+// x and y is the return value.
+func (p *Point) Get() (x int, y int) {
     return p.x, p.y
 }
 
+// Set the x,y dimension for Point.
 func (p *Point) Put(x, y int) {
     p.x, p.y = x, y
 }
@@ -28,15 +32,19 @@ func (p *Point) add(x, y int) (int, int) {
     return p.x + x, p.y + y
 }
 
+// Simulate OO inheritence.
 type PointChild struct {
     Point // anonymous field
     z int
 }
 
+// Simulate OO override
 func (p *PointChild) Get() (int, int, int) {
     return p.x, p.y, p.z
 }
 
+// An interface demo.
+// Interface by duck type.
 type Pointer interface {
     Get() (int, int)
     Put(x, y int)
