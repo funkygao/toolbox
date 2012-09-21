@@ -9,6 +9,7 @@ import (
     "log"
     "strconv"
     "strings"
+    "sort"
 )
 
 /**
@@ -34,7 +35,7 @@ func filesOfUser(username string) int {
 }
 
 /**
- * 找出所有VCS用户名
+ * 找出所有git用户名
  */
 func getUsers() []string {
     git := "git log --pretty=format:%an | sort | uniq"
@@ -63,11 +64,51 @@ func topUsers() map[string] int {
     return users
 }
 
+type ValSorter struct {
+    Keys []string
+    Values []int
+}
+
+func newValSorter(m map[string] int) *ValSorter {
+    vs := &ValSorter{
+        Keys: make([]string, len(m)),
+        Values: make([]int, len(m)),
+    }
+
+    for k, v := range m {
+        vs.Keys = append(vs.Keys, k)
+        vs.Values = append(vs.Values, v)
+    }
+
+    return vs
+}
+
+func (vs *ValSorter) Sort() {
+    sort.Sort(vs)
+}
+
+func (vs *ValSorter) Len() int {
+    return len(vs.Values)
+}
+
+func (vs *ValSorter) Less(i, j int) bool {
+    return vs.Values[i] < vs.Values[j]
+}
+
+func (vs *ValSorter) Swap(i, j int) {
+    vs.Values[i], vs.Values[j] = vs.Values[j], vs.Values[i]
+    vs.Keys[i], vs.Keys[j] = vs.Keys[j], vs.Keys[i]
+}
+
 func main() {
-    getUsers()
     result := topUsers()
-    for k, v := range result {
-        fmt.Printf("%15s\t%d\n", k, v)
+    // 对结果进行排序
+    vs := newValSorter(result)
+    vs.Sort()
+
+    // 输出排序后的结果
+    for _, v := range vs.Keys {
+        fmt.Printf("%15s\t%d\n", v, result[v])
     }
 }
 
