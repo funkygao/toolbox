@@ -1,6 +1,12 @@
 /*
- * Simulation of OO
- */
+Simulation of OO
+
+Here is the package comment.
+
+Every package should have a package comment, a block comment preceding the package clause.
+
+For multi-file packages, the package comment only needs to be present in one file, and any one will do.
+*/
 package main
 
 import "fmt"
