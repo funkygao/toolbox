@@ -139,3 +139,19 @@ Usage
         PI = 3.14
         PREFIX = "go_"
     )
+
+
+Redeclaration
+-------------
+
+::
+
+    // valid
+    a, b := 1, 2
+    a, c : = 1, 5
+
+    // invalid
+    a, b := 1, 2
+    a, b := 1, 5
+
+
