@@ -101,14 +101,19 @@ func (vs *ValSorter) Swap(i, j int) {
 }
 
 func main() {
+    const COUNT_THRESHOLD = 5
+
     result := topUsers()
     // 对结果进行排序
     vs := newValSorter(result)
     vs.Sort()
 
     // 输出排序后的结果
-    for _, v := range vs.Keys {
-        fmt.Printf("%15s\t%d\n", v, result[v])
+    for _, name := range vs.Keys {
+        count := result[name]
+        if count > COUNT_THRESHOLD {
+            fmt.Printf("%15s\t%d\n", name, count)
+        }
     }
 }
 
