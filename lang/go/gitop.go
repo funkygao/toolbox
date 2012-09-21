@@ -10,6 +10,8 @@ import (
     "strconv"
     "strings"
     "sort"
+    "runtime"
+    "flag"
 )
 
 /**
@@ -50,11 +52,21 @@ func getUsers() []string {
 
 /**
  * 总排行
+ *
+ * concurrent 并发数
  */
-func topUsers() map[string] int {
+func topUsers(concurrent int) map[string] int {
+    runtime.GOMAXPROCS(concurrent + 5)
+
+    println("concurrent:", concurrent)
+    printSeperator(50, "=")
+
+    //c := make(chan map[string] int, concurrent)
+
     users := make(map[string] int)
     usernames := getUsers()
-    fmt.Println(usernames)
+    fmt.Println("users:", usernames)
+    printSeperator(50, "-")
     for _, name := range usernames {
         if len(strings.TrimSpace(name)) > 0 && !strings.Contains(name, " ") {
             users[name] = filesOfUser(name)
@@ -62,6 +74,13 @@ func topUsers() map[string] int {
     }
 
     return users
+}
+
+func printSeperator(num int, content string) {
+    for i := 0; i < num; i++ {
+        print(content)
+    }
+    println()
 }
 
 type ValSorter struct {
@@ -103,11 +122,15 @@ func (vs *ValSorter) Swap(i, j int) {
 func main() {
     const COUNT_THRESHOLD = 5
 
-    result := topUsers()
+    var concurrent = flag.Int("c", 1, "concurrent")
+    flag.Parse()
+
+    result := topUsers(*concurrent)
     // 对结果进行排序
     vs := newValSorter(result)
     vs.Sort()
 
+    printSeperator(50, "=")
     // 输出排序后的结果
     for _, name := range vs.Keys {
         count := result[name]
