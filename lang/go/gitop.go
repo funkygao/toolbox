@@ -6,6 +6,7 @@ package main
 import (
     "fmt"
     "os/exec"
+    "os"
     "log"
     "strconv"
     "strings"
@@ -24,8 +25,6 @@ func filesOfUser(username string) int {
         log.Fatal(err)
     }
 
-    println(username + " ...")
-
     count := fmt.Sprintf("%s", out)
     count = strings.TrimSpace(count)
     n, err := strconv.Atoi(count)
@@ -34,6 +33,14 @@ func filesOfUser(username string) int {
     }
 
     return n
+}
+
+func filesOfUsers(users []string, c chan map[string] int) {
+    for _, name := range users {
+        count := filesOfUser(name)
+        msg := map[string] int{name: count}
+        c <- msg
+    }
 }
 
 /**
@@ -46,8 +53,11 @@ func getUsers() []string {
         log.Fatal(err)
     }
 
-    o := fmt.Sprintf("%s\n", out)
-    return strings.Split(o, "\n")
+    outStr := fmt.Sprintf("%s", out)
+    outStr = strings.TrimSpace(outStr)
+
+    userArr := strings.Split(outStr, "\n")
+    return userArr
 }
 
 /**
@@ -58,22 +68,70 @@ func getUsers() []string {
 func topUsers(concurrent int) map[string] int {
     runtime.GOMAXPROCS(concurrent + 5)
 
-    println("concurrent:", concurrent)
+    println("concurrent =", concurrent)
     printSeperator(50, "=")
 
-    //c := make(chan map[string] int, concurrent)
-
-    users := make(map[string] int)
     usernames := getUsers()
-    fmt.Println("users:", usernames)
+    chunkSize := len(usernames) / concurrent
+    fmt.Println("count =", len(usernames))
+    fmt.Println("chunkSize =", chunkSize)
+    fmt.Println("users =", usernames)
     printSeperator(50, "-")
-    for _, name := range usernames {
-        if len(strings.TrimSpace(name)) > 0 && !strings.Contains(name, " ") {
-            users[name] = filesOfUser(name)
+
+    // 创建总人数长度的channel
+    channels := make(chan map[string] int, len(usernames))
+
+    usercount, seqInChunk, chunk := 0, 0, 0
+    names := make([]string, 0)
+    for index, name := range usernames {
+        if isUsernameValid(name) {
+            usercount ++ // 有效用户总数
+            seqInChunk ++ // 本次chunk内该用户名的序列号
+            names = append(names, name) // 本chunk内的用户名列表
+            if seqInChunk >= chunkSize {
+                printNamesInChunk(chunk, names)
+
+                go filesOfUsers(names, channels)
+
+                seqInChunk = 0
+                chunk ++
+                names = make([]string, 0)
+            } else if (chunk == concurrent && index == len(usernames) -1) {
+                // 最后的chunk，its item num < chunkSize
+                printNamesInChunk(chunk, names)
+
+                go filesOfUsers(names, channels)
+            }
+        } else {
+            println("Invalid name:", name)
+            println()
         }
     }
 
-    return users
+    // 收集各个goroutines的放入channel的结果
+    r := make(map[string] int) // result
+    for i := 0; i < usercount; i++ {
+        chunkResult := <- channels
+        fmt.Println("<-msg:", chunkResult)
+        for k, v := range chunkResult {
+            r[k] = v
+        }
+    }
+
+    return r
+}
+
+func printNamesInChunk(chunk int, names []string) {
+    fmt.Print("chunk: ", chunk, " count: ", len(names), " users: [")
+    for i, name := range(names) {
+        print(i, ":", name, ", ")
+    }
+    println("]\n")
+}
+
+func isUsernameValid(name string) bool {
+    trimmedName := strings.TrimSpace(name)
+    return len(trimmedName) > 1 && !strings.Contains(trimmedName, "no author")
 }
 
 func printSeperator(num int, content string) {
@@ -138,5 +196,7 @@ func main() {
             fmt.Printf("%15s\t%d\n", name, count)
         }
     }
+
+    os.Exit(0)
 }
 
