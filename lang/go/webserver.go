@@ -12,7 +12,8 @@ func requestHandler(writer http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-    runtime.GOMAXPROCS(100)  // 并发协程数
+    println("listen on port 9000")
+    runtime.GOMAXPROCS(30)  // 并发协程数
     http.HandleFunc("/", requestHandler)
     http.ListenAndServe(":9000", nil)
 }
