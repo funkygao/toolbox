@@ -15,6 +15,18 @@ func main() {
     x, y := demoFunc(8, "go", "func")
     println(x, y)
     demoDebug("debug")
+    demoFuncAsParam("func as param")
+}
+
+func foo() {println("foo")}
+func bar() {println("bar")}
+
+func callFuncAsParam(f func()) {
+    f()
+}
+
+func demoFuncAsParam(tag string) {
+    callFuncAsParam(foo)
 }
 
 func demoDebug(tag string) {
