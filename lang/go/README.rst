@@ -110,6 +110,7 @@ recover
 
     str := recover()
 
+
 goroutine
 ---------
 It originates in Hoare's Communicating Sequential Processes (CSP), it can also be seen as a type-safe generalization of Unix pipes.
@@ -144,9 +145,39 @@ chan
     // recv
     msg := <- c
 
-
 GC
 --
+
+Simple mark-and-sweep collector
+
+runtime is like JVM whose reposibilities includes:
+
+- memory allocation
+
+- gc
+
+- stack handling
+
+- goroutines
+
+- channels
+
+- reflection
+
+- slice, map
+
+- etc
+
+Missing
+-------
+
+- assertions
+
+- dynamic lib
+
+- immutable var
+
+- exceptions 
 
 
 Usage
@@ -191,3 +222,7 @@ If
         println("ok")
     }
 
+Cases
+=====
+
+- google map
