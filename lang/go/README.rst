@@ -202,10 +202,12 @@ Usage
 分组
 --------
 
+适用于import, const, var, type
+
 ::
 
     import (
-        "fmt"
+        fm "fmt"
         "os"
     )
 
@@ -237,6 +239,35 @@ If
     if a := 1; a < 10 {
         println("ok")
     }
+
+
+File Structure
+--------------
+
+::
+
+    package main
+
+    import (
+        "fmt"
+    )
+
+    const c = "C"
+
+    var v int = 5
+
+    type T struct {
+    }
+
+    func init() {
+    }
+
+    func main() {
+    }
+
+    func (t T)Method1() {
+    }
+
 
 Cases
 =====
