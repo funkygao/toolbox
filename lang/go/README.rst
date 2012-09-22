@@ -118,16 +118,27 @@ conversion
     a := 4.5
     b := int(a)
 
+
 goroutine
 ---------
-It originates in Hoare's Communicating Sequential Processes (CSP), it can also be seen as a type-safe generalization of Unix pipes.
+- 起源于Hoare's Communicating Sequential Processes (CSP)
+  
+  it can also be seen as a type-safe generalization of Unix pipes.
 
-It is a function executing concurrently with other goroutines in the same address space. 
+- 运行在同个地址空间
 
-It is lightweight, costing little more than the allocation of stack space. 
-And the stacks start small, so they are cheap, and grow by allocating (and freeing) heap storage as required.
+- lightweight
+  
+  they are created with 4K memory stack-space on the heap. 可以轻松地创建10万级别的goroutines
 
-Goroutines are multiplexed onto multiple OS threads.
+  他们使用segmented stack，自动地动态增加／减少内存使用。
+
+  他们使用的stack不会被gc，而是当该goroutine退出后立即自动释放
+
+- gc vs gccgo
+
+  只有gc compiler会自动为goroutine分配线程，而gccgo只是为每个goroutine分配一个线程
+
 
 ::
 
@@ -138,9 +149,38 @@ Goroutines are multiplexed onto multiple OS threads.
         fmt.Println(msg)
     }(10)
 
+    func myfunc() {
+        // xxx
+        runtime.Gosched() // yield the processor without suspend the current goroutine
+        // xxx
+    }
 
-chan
-^^^^
+
+channel
+^^^^^^^
+
+FIFO and preserve the order of items that are sent into them
+
+The very act of communication through a channel guarantees synchronization.
+
+Only one goroutine has access to a data item at any given time: so data races cannot occur, by design
+
+Channel send and recv operations are atomic!
+
+为了易读，channel的变量通常以ch或chan开头
+
+- unbuffered
+
+  send/recv block until the other side is ready
+  
+  the communication succeeds only when both sender and recver are ready
+
+- buffered
+
+  ch := make(chan int, 20)
+  cap(ch) // 20, capability
+
+
 
 ::
 
@@ -151,6 +191,9 @@ chan
 
     // recv
     msg := <- c
+
+    chanOfChans := make(chan chan int)
+
 
 GC
 --
@@ -288,6 +331,12 @@ File Structure
     func (t T)Method1() {
     }
 
+
+main
+----
+
+When the function main() returns, the program exits: 
+it does not wait for other (non-main) goroutines to complete.
 
 Cases
 =====
