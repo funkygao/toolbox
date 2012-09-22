@@ -110,6 +110,13 @@ recover
 
     str := recover()
 
+conversion
+----------
+
+::
+
+    a := 4.5
+    b := int(a)
 
 goroutine
 ---------
@@ -214,6 +221,19 @@ Usage
     const (
         PI = 3.14
         PREFIX = "go_"
+    )
+
+    const (
+        Sunday = iota
+        Monday
+        Tuesday
+    )
+
+    type Color int
+    const (
+        Red Color = iota // 0
+        Blue             // 1
+        Green
     )
 
 
