@@ -168,6 +168,22 @@ runtime is like JVM whose reposibilities includes:
 
 - etc
 
+
+Performance
+-----------
+
+- vs c++
+
+  20% slower than c++
+
+- vs java and scala
+
+  twice as fast and requiring 70% less memory
+
+- vs python
+
+  on average 25 x faster than Python 3, uses 1/3 of the memory
+
 Missing
 -------
 
