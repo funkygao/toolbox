@@ -14,6 +14,17 @@ func main() {
     demoChannel("channel")
     x, y := demoFunc(8, "go", "func")
     println(x, y)
+    demoDebug("debug")
+}
+
+func demoDebug(tag string) {
+    type X struct {
+        x, y int
+        z string
+    }
+
+    x := X{1, 3, "haha"}
+    fmt.Printf("%+v, %#v, %T\n", x, x, x)
 }
 
 func demoChannel(tag string) {
