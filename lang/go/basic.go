@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
-import "os"
+import (
+    "fmt"
+    "os"
+    "reflect"
+)
 
 func main() {
     demoIf("if")
@@ -16,7 +19,17 @@ func main() {
     println(x, y)
     demoDebug("debug")
     demoFuncAsParam("func as param")
+    demoReflect("reflect")
 }
+
+func demoReflect(tag string) {
+    printDemoFeature(tag)
+
+    x, y := 5, "Hello"
+    println(reflect.TypeOf(x), reflect.TypeOf(y))
+    fmt.Println(reflect.TypeOf(x))
+}
+
 
 func foo() {println("foo")}
 func bar() {println("bar")}
@@ -26,10 +39,14 @@ func callFuncAsParam(f func()) {
 }
 
 func demoFuncAsParam(tag string) {
+    printDemoFeature(tag)
+
     callFuncAsParam(foo)
 }
 
 func demoDebug(tag string) {
+    printDemoFeature(tag)
+
     type X struct {
         x, y int
         z string
