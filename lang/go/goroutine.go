@@ -1,3 +1,19 @@
+/*
+    goroutine1  goroutine2  goroutine3  goroutineN
+        |           |           |           |
+         -----------------------------------
+                        |
+                        | multiplex
+                        |
+          goroutine-scheduler(runtime pkg)
+                        |
+             GOMAXPROCS | thread pool
+                        |
+                 -----------
+                |           |
+            os thread   os thread
+            ---------   ---------
+*/
 package main
 
 import (
@@ -12,9 +28,16 @@ func sum(a []int, c chan int) {
     }
 
     c <- sum
+
+    runtime.Goexit()  // unecessary
 }
 
 func main() {
+    cpus := runtime.NumCPU()
+    fmt.Println("num of cpu:", cpus)
+
+    runtime.GOMAXPROCS(cpus)
+
     a := []int{7, 2, 8, -9, 4, 0}
     c := make(chan int, 2)
     runtime.GOMAXPROCS(100)
