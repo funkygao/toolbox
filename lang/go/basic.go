@@ -28,6 +28,9 @@ func demoReflect(tag string) {
     x, y := 5, "Hello"
     println(reflect.TypeOf(x), reflect.TypeOf(y))
     fmt.Println(reflect.TypeOf(x))
+
+    v := reflect.ValueOf(x)
+    fmt.Println(v.Type(), v.Kind(), v.Interface())
 }
 
 
