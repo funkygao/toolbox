@@ -24,3 +24,4 @@ Usage
 
 In insert mode, type Ctrl-j and use arrow key to navigate the autocomplete choice list
 
+Ctrl-h godoc
