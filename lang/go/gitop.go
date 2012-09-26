@@ -11,15 +11,19 @@ import (
     "os"
     "log"
     "strconv"
+    "sync"
     "strings"
     "sort"
     "runtime"
     "flag"
 )
 
+// 独享锁
+var lock *sync.Mutex
+
 // 获取某个用户的提交过的文件数量
-func FilesOfUser(username string) int {
-    git := fmt.Sprintf("git log --author=%s --pretty=%%H | while read commit_hash; do git show --oneline --name-only $commit_hash | tail -n+2; done | sort | uniq | wc -l", username)
+func filesOfUser(username string) int {
+    git := fmt.Sprintf("git log --author='%s' --pretty=%%H | while read commit_hash; do git show --oneline --name-only $commit_hash | tail -n+2; done | grep -v branch_gaopeng_for_test | grep -v branches | sort | uniq | wc -l", username)
     out, err := exec.Command("sh", "-c", git).Output()
     if err != nil {
         log.Fatal(err)
@@ -35,6 +39,7 @@ func FilesOfUser(username string) int {
     return n
 }
 
+// 获取某些用户的提交过，把结果放入chan
 func filesOfUsers(users []string, c chan map[string] int) {
     for _, name := range users {
         count := filesOfUser(name)
@@ -43,9 +48,7 @@ func filesOfUsers(users []string, c chan map[string] int) {
     }
 }
 
-/**
- * 找出所有git用户名
- */
+// 找出所有git用户名
 func getUsers() []string {
     git := "git log --pretty=format:%an | sort | uniq"
     out, err := exec.Command("sh", "-c", git).Output()
@@ -66,20 +69,15 @@ func getUsers() []string {
  * concurrent 并发数
  */
 func topUsers(concurrent int) map[string] int {
-    runtime.GOMAXPROCS(concurrent + 5)
-
-    println("concurrent =", concurrent)
-    printSeperator(50, "=")
-
     usernames := getUsers()
-    chunkSize := len(usernames) / concurrent
-    fmt.Println("count =", len(usernames))
-    fmt.Println("chunkSize =", chunkSize)
-    fmt.Println("users =", usernames)
-    printSeperator(50, "-")
+    totalUsers := len(usernames)
+    chunkSize := totalUsers / concurrent
+    fmt.Println("count =", totalUsers, "chunkSize=", chunkSize)
+    fmt.Println("users =", strings.Join(usernames, ", "))
+    println(strings.Repeat("-", 50))
 
     // 创建总人数长度的channel
-    channels := make(chan map[string] int, len(usernames))
+    channels := make(chan map[string] int, totalUsers)
 
     usercount, seqInChunk, chunk := 0, 0, 0
     names := make([]string, 0)
@@ -108,22 +106,13 @@ func topUsers(concurrent int) map[string] int {
         }
     }
 
-    // 收集各个goroutines的放入channel的结果
-    r := make(map[string] int) // result
-    for i := 0; i < usercount; i++ {
-        chunkResult := <- channels
-        fmt.Println("<-msg:", chunkResult)
-        for k, v := range chunkResult {
-            r[k] = v
-        }
-    }
-
-     c := make(chan map[string] int)
-     go collectResult(usercount, channels, c)
+    c := make(chan map[string] int)
+    go collectResult(usercount, channels, c)
 
     return <- c
 }
 
+// 收集各个goroutines的放入channel的结果
 func collectResult(usercount int, channels chan map[string] int, c chan map[string] int) {
     r := make(map[string] int) // result
     for i := 0; i < usercount; i++ {
@@ -138,11 +127,13 @@ func collectResult(usercount int, channels chan map[string] int, c chan map[stri
 }
 
 func printNamesInChunk(chunk int, names []string) {
-    fmt.Print("chunk: ", chunk, " count: ", len(names), " users: [")
+    lock.Lock()
+    fmt.Print("chunk: ", chunk + 1, " count: ", len(names), " users: [")
     for i, name := range(names) {
-        print(i, ":", name, ", ")
+        print(i + 1, ":", name, ", ")
     }
     println("]\n")
+    lock.Unlock()
 }
 
 func isUsernameValid(name string) bool {
@@ -150,13 +141,9 @@ func isUsernameValid(name string) bool {
     return len(trimmedName) > 1 && !strings.Contains(trimmedName, "no author")
 }
 
-func printSeperator(num int, content string) {
-    for i := 0; i < num; i++ {
-        print(content)
-    }
-    println()
-}
-
+//--------------------------
+// sorter
+//--------------------------
 type ValSorter struct {
     Keys []string
     Values []int
@@ -194,17 +181,26 @@ func (vs *ValSorter) Swap(i, j int) {
 }
 
 func main() {
-    const COUNT_THRESHOLD = 5
-
     var concurrent = flag.Int("c", 1, "concurrent")
     flag.Parse()
+
+    maxprocs := runtime.NumCPU() + 1
+
+    runtime.GOMAXPROCS(maxprocs)
+
+    println("concurrent =", *concurrent, ", maxprocs=", maxprocs)
+    println(strings.Repeat("=", 50))
+
+    lock = new(sync.Mutex)
 
     result := topUsers(*concurrent)
     // 对结果进行排序
     vs := newValSorter(result)
     vs.Sort()
 
-    printSeperator(50, "=")
+    println(strings.Repeat("=", 50))
+
+    const COUNT_THRESHOLD = 5
     // 输出排序后的结果
     for _, name := range vs.Keys {
         count := result[name]
