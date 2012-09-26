@@ -42,6 +42,16 @@ Syntax
   var foo int
 
 
+Stack vs heap
+-------------
+
+消除了堆与栈的边界，Go 语言里面你不需要关心，也并不清楚，变量在堆上还是栈上
+
+runtime自动选择何时使用stack，何时使用heap
+
+go语言中使用的是非连续栈，原因是需要支持goroutine
+
+
 Builtin func
 ------------
 
@@ -337,6 +347,28 @@ main
 
 When the function main() returns, the program exits: 
 it does not wait for other (non-main) goroutines to complete.
+
+Internals
+=========
+
+startup
+-------
+
+::
+
+        runtime.osinit
+            |
+        runtime.schedinit 
+            |
+        runtime.newproc 
+            |
+        runtime.mstart 
+            |
+        schedule 
+            |
+        runtime.main 
+            |
+        main.main
 
 Cases
 =====
