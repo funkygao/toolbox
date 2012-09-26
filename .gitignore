@@ -6,3 +6,4 @@ ftest.xml
 funkload.xml
 _build/
 target/
+*.iml
