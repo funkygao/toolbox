@@ -1,0 +1,9 @@
+export GOPATH=$GOPATH:/Users/gaopeng/github/toolbox/lang/go/proj
+
+cd /Users/gaopeng/github/toolbox/lang/go/proj
+go build proj
+
+cd /Users/gaopeng/github/toolbox/lang/go/proj/src/mypack
+go test foo_test.go
+
+go clean
