@@ -16,13 +16,17 @@ Command
 
     go build my.go
 
-    go run my.go
+    go run -x my.go
 
     go doc builtin
 
     godoc fmt Println
 
     godoc -http=":6060"
+
+    go list ./... # ”./...”表示当前目录（”./”）下的所有包（”...”)
+
+    go test -v ./...
 
 
 Features
@@ -50,6 +54,12 @@ Stack vs heap
 runtime自动选择何时使用stack，何时使用heap
 
 go语言中使用的是非连续栈，原因是需要支持goroutine
+
+
+Access control
+--------------
+
+at the package level
 
 
 Builtin func
