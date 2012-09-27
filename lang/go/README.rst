@@ -45,6 +45,10 @@ Syntax
 
   var foo int
 
+- pass by value
+
+  not by reference
+
 
 Stack vs heap
 -------------
@@ -60,6 +64,11 @@ Access control
 --------------
 
 at the package level
+
+import
+------
+
+A Go program or package’s imports are first searched for under the GOPATH path or paths, and then under GOROOT
 
 
 Builtin func
@@ -83,6 +92,8 @@ Builtin func
 - make
 
   用于内建类型的内存分配，仅用于slice, map, channel
+
+  make() always returns a reference to the value it created
 
   it returns an initialized (not zeroed) value of type T (not `*T`)
 
@@ -357,6 +368,22 @@ main
 
 When the function main() returns, the program exits: 
 it does not wait for other (non-main) goroutines to complete.
+
+
+
+Func
+----
+
+- func
+
+- method
+
+  - Has receiver
+
+  - Every method name must be unique for any given type
+
+    不支持java里的同名但参数不同的形式
+
 
 Internals
 =========
