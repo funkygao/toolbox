@@ -128,12 +128,12 @@ func collectResult(usercount int, channels chan map[string] int, c chan map[stri
 
 func printNamesInChunk(chunk int, names []string) {
     lock.Lock()
+    defer lock.Unlock()
     fmt.Print("chunk: ", chunk + 1, " count: ", len(names), " users: [")
     for i, name := range(names) {
         print(i + 1, ":", name, ", ")
     }
     println("]\n")
-    lock.Unlock()
 }
 
 func isUsernameValid(name string) bool {
