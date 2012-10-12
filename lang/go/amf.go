@@ -12,6 +12,9 @@ import (
     "strings"
 )
 
+const (
+)
+
 // a single line meta info
 type Request struct {
     http_method, uri, rid, class, method, args string
@@ -20,7 +23,7 @@ type Request struct {
 
 // parse a line into meta info
 // ret -> valid line?
-func (req *Request) parse(line string, validator func(string) bool) bool {
+func (req *Request) ParseLine(line string, validator func(string) bool) bool {
     if !validator(line) {
         return false
     }
@@ -96,7 +99,7 @@ func handleLine(lineCh chan string) {
     var line string = <- lineCh
 
     req := new(Request)
-    if !req.parse(line, lineValidator) {
+    if !req.ParseLine(line, lineValidator) {
         return
     }
 
