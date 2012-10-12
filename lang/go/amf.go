@@ -21,7 +21,8 @@ const (
 
 var lock *sync.Mutex
 
-var eof chan bool = make(chan bool)
+var eof chan bool = make(chan bool)   // all the specified dlog lines are read
+var exit chan bool = make(chan bool)  // let main goroutine exit
 
 // a single line meta info
 type Request struct {
@@ -39,7 +40,7 @@ func (req Request) ValidateLine(line string) bool {
         }
     }
 
-    return true
+    return false
 }
 
 // parse a line into meta info
@@ -117,6 +118,18 @@ func handleLine(chLine chan string) {
     fmt.Printf("%5d%36s%20s %s\n", req.time, req.uri, req.class, req.method)
 }
 
+func renderReportHeader() {
+    println(strings.Repeat("=", 100))
+    println(strings.Repeat(" ", 10), "Final Report")
+    println(strings.Repeat("=", 100))
+}
+
+func renderReport() {
+    <- eof
+    renderReportHeader()
+    exit <- true
+}
+
 func main() {
     // parallel level
     runtime.GOMAXPROCS(runtime.NumCPU() + 1)
@@ -127,8 +140,11 @@ func main() {
 
     // init done! start the job
     if *logFile == DEFAULT_IN_READER {
-        readLines(os.Stdin)
+        go readLines(os.Stdin)
     }
 
+    go renderReport()
+
+    <- exit
 }
 
