@@ -3,6 +3,7 @@ package main
 
 import (
     "bufio"
+    "flag"
     "fmt"
     "io"
     "log"
@@ -10,14 +11,21 @@ import (
     "runtime"
     "strconv"
     "strings"
+    "sync"
 )
 
 const (
     LINE_CH_BUFFER = 10
+    DEFAULT_IN_READER = "stdin"
 )
+
+var lock *sync.Mutex
+
+var eof chan bool = make(chan bool)
 
 // a single line meta info
 type Request struct {
+    // TODO http_method is useless?
     http_method, uri, rid, class, method, args string
     time int16
 }
@@ -61,7 +69,7 @@ func (req *Request) ParseLine(line string) bool {
     callInfo := strings.Split(callRaw, ":")
     time, err := strconv.Atoi(callInfo[1])
     if err != nil {
-        log.Fatal(err)
+        log.Fatal(line, err)
     }
     req.time = int16(time)
     req.class = callInfo[3]
@@ -75,7 +83,7 @@ func (req *Request) ParseLine(line string) bool {
 // better printable Request
 func (req *Request) String() string {
     return fmt.Sprintf("{http:%s uri:%s rid:%s class:%s method:%s time:%d args:%s}",
-    req.http_method, req.uri, req.rid, req.class, req.method, req.time, req.args)
+        req.http_method, req.uri, req.rid, req.class, req.method, req.time, req.args)
 }
 
 // read lines from stdin
@@ -88,6 +96,7 @@ func readLines(file *os.File) {
             if err != io.EOF {
                 log.Fatal(err)
             }
+            eof <- true
             break
         }
 
@@ -109,8 +118,17 @@ func handleLine(chLine chan string) {
 }
 
 func main() {
+    // parallel level
     runtime.GOMAXPROCS(runtime.NumCPU() + 1)
 
-    readLines(os.Stdin)
+    // cli options
+    logFiles := flag.String("f", DEFAULT_IN_READER, "specify dlog file[s] path, wildcard permitted")
+    flag.Parse()
+
+    if *logFiles == DEFAULT_IN_READER {
+        readLines(os.Stdin)
+    }
+
+
 }
 
