@@ -118,16 +118,22 @@ func handleLine(chLine chan string) {
     fmt.Printf("%5d%36s%20s %s\n", req.time, req.uri, req.class, req.method)
 }
 
+// output the report header
 func renderReportHeader() {
     println(strings.Repeat("=", 100))
     println(strings.Repeat(" ", 10), "Final Report")
     println(strings.Repeat("=", 100))
 }
 
-func renderReport() {
-    <- eof
-    renderReportHeader()
-    exit <- true
+// output the final report as a whole
+func renderReport(renderHeader func()) {
+    // wait for the eof of all the dlog files
+    <- eof 
+
+    renderHeader()
+
+    // tell main goroutine to exit
+    exit <- true 
 }
 
 func main() {
@@ -143,7 +149,7 @@ func main() {
         go readLines(os.Stdin)
     }
 
-    go renderReport()
+    go renderReport(renderReportHeader)
 
     <- exit
 }
