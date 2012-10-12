@@ -13,6 +13,7 @@ import (
 )
 
 const (
+    LINE_CH_BUFFER = 10
 )
 
 // a single line meta info
@@ -67,7 +68,7 @@ func (req *Request) String() string {
 // read lines from stdin
 func readLines(file *os.File) {
     inputReader := bufio.NewReader(file)
-    lineCh := make(chan string, 10)
+    lineCh := make(chan string, LINE_CH_BUFFER)
     for {
         line, err := inputReader.ReadString('\n')
         if err != nil {
