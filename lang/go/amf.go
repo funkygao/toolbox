@@ -62,8 +62,8 @@ func (req *Request) String() string {
 }
 
 // read lines from stdin
-func readLines() {
-    inputReader := bufio.NewReader(os.Stdin)
+func readLines(file *os.File) {
+    inputReader := bufio.NewReader(file)
     lineCh := make(chan string, 10)
     for {
         line, err := inputReader.ReadString('\n')
@@ -106,6 +106,6 @@ func handleLine(lineCh chan string) {
 func main() {
     runtime.GOMAXPROCS(runtime.NumCPU() + 1)
 
-    readLines()
+    readLines(os.Stdin)
 }
 
