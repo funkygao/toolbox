@@ -22,19 +22,32 @@ type Request struct {
     time int16
 }
 
+// line validator for Request
+func (req Request) ValidateLine(line string) bool {
+    var items = []string{"AMF_SLOW", "100.123", "PHP.CDlog"}
+    for _, item := range items {
+        if !strings.Contains(line, item) {
+            return false
+        }
+    }
+
+    return true
+}
+
 // parse a line into meta info
 // ret -> valid line?
-func (req *Request) ParseLine(line string, validator func(string) bool) bool {
-    if !validator(line) {
+func (req *Request) ParseLine(line string) bool {
+    if !req.ValidateLine(line) {
         return false
     }
 
+    // major parts seperated by space
     parts := strings.Split(line, " ")
 
     // uri related
     uriInfo := strings.Split(parts[5], "+")
     if len(uriInfo) < 3 {
-        log.Fatal(parts[5])
+        log.Fatal(line)
     }
     req.http_method, req.uri, req.rid = uriInfo[0], uriInfo[1], uriInfo[2]
 
@@ -68,7 +81,7 @@ func (req *Request) String() string {
 // read lines from stdin
 func readLines(file *os.File) {
     inputReader := bufio.NewReader(file)
-    lineCh := make(chan string, LINE_CH_BUFFER)
+    chLine := make(chan string, LINE_CH_BUFFER)
     for {
         line, err := inputReader.ReadString('\n')
         if err != nil {
@@ -78,29 +91,17 @@ func readLines(file *os.File) {
             break
         }
 
-        lineCh <- line
-        go handleLine(lineCh)
+        chLine <- line
+        go handleLine(chLine)
     }
-}
-
-// line validator
-func lineValidator(line string) bool {
-    var items = []string{"AMF_SLOW", "100.123", "PHP.CDlog"}
-    for _, item := range items {
-        if !strings.Contains(line, item) {
-            return false
-        }
-    }
-
-    return true
 }
 
 // raw line handler
-func handleLine(lineCh chan string) {
-    var line string = <- lineCh
+func handleLine(chLine chan string) {
+    var line string = <- chLine
 
     req := new(Request)
-    if !req.ParseLine(line, lineValidator) {
+    if !req.ParseLine(line) {
         return
     }
 
