@@ -122,13 +122,13 @@ func main() {
     runtime.GOMAXPROCS(runtime.NumCPU() + 1)
 
     // cli options
-    logFiles := flag.String("f", DEFAULT_IN_READER, "specify dlog file[s] path, wildcard permitted")
+    logFile := flag.String("f", DEFAULT_IN_READER, "specify dlog file[s] path, wildcard permitted")
     flag.Parse()
 
-    if *logFiles == DEFAULT_IN_READER {
+    // init done! start the job
+    if *logFile == DEFAULT_IN_READER {
         readLines(os.Stdin)
     }
-
 
 }
 
