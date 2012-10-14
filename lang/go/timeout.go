@@ -9,7 +9,7 @@ func main() {
     c1 := make(chan int)
 
     go func() {
-        time.Sleep(1e9)
+        time.Sleep(1e9) // time.Sleep(time.Second * 1)
         c <- true
     }()
 
