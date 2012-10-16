@@ -280,6 +280,18 @@ Missing
 Usage
 =====
 
+print
+-----
+
+::
+
+    type Integer struct {
+        int32
+    }
+
+    i := Integer{5}
+    fmt.Printf("%v, %#v, %+v\n", i, i, i)
+
 分组
 --------
 
