@@ -290,7 +290,7 @@ print
     }
 
     i := Integer{5}
-    fmt.Printf("%v, %#v, %+v\n", i, i, i)
+    fmt.Printf("%T, %v, %#v, %+v\n", i, i, i, i)
 
 分组
 --------
