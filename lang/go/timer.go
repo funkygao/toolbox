@@ -6,6 +6,13 @@ import (
 )
 
 func main() {
+    ticker := time.NewTicker(time.Microsecond * 500)
+    go func() {
+        for t := range ticker.C {
+            fmt.Println("tikcer at:", t)
+        }
+    }()
+
     timer1 := time.NewTimer(time.Second * 2)
 
     <- timer1.C
@@ -20,6 +27,7 @@ func main() {
     if timer2.Stop() {
         println("t2 stopped")
     }
+
 
 }
 

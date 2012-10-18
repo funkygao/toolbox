@@ -7,6 +7,7 @@ import (
 
 type ByLength []string
 
+// implement sort.Interface - Len, Swap, Less
 func (s ByLength) Len() int {
     return len(s)
 }

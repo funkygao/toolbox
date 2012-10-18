@@ -49,6 +49,10 @@ Syntax
 
   not by reference
 
+- 接口是由使用方按需定义
+  
+  而不用事前规划
+
 
 Stack vs heap
 -------------
