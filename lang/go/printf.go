@@ -10,5 +10,6 @@ func main() {
 
     x := X{1, 5, "hello"}
     fmt.Printf("%#v %+v %T\n", x, x, x)
-    fmt.Printf("%*s\n", 10, x.z)
+    var b bool
+    fmt.Printf("%*s %v\n", 10, x.z, b)
 }
