@@ -1,5 +1,8 @@
 /*
+codeblock
+automatic type inference
 _ : blank identifier
+`we are`: raw string
 anonymous 
 type I int8: underlying type
 */
@@ -18,9 +21,20 @@ const (
 )
 
 const (
+    _ = iota
+    KB = 1 << (10 * iota)
+    MB
+    GB
+    TB
+)
+
+const (
     Y = iota
 )
 
 func main() {
-    fmt.Printf("%v %v %v\n", MONDAY, X, Y)
+    var unicodeChar rune = 0x5578
+    fmt.Printf("%v %v %v %c\n", MONDAY, X, Y, unicodeChar)
+    println(KB, MB, GB)
+
 }

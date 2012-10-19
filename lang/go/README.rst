@@ -415,3 +415,8 @@ Cases
 =====
 
 - google map
+
+Remarks
+=======
+
+- init() is per file instead of per package
