@@ -10,7 +10,7 @@ func main() {
     }
 
     x := X{1, 5, "hello"}
-    fmt.Printf("%#v %+v %T\n", x, x, x)
+    fmt.Printf("%#v %+v %T %p %x\n", x, x, x, &x, x)
     var b bool
     fmt.Printf("%*s %v\n", 10, x.z, b)
     var l *log.Logger
