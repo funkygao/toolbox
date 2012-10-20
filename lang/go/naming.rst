@@ -29,3 +29,4 @@ Good naming examples
     stats.go
     store.go
     protocol.go
+    example_test.go
