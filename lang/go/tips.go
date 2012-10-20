@@ -17,7 +17,7 @@ func (b ByteSize) String() string {
     case b >= MB:
         return fmt.Sprintf("%.2fMB", b/MB)
     case b >= KB:
-        return fmt.Sprintf("%.2fEB", b/KB)
+        return fmt.Sprintf("%.2fKB", b/KB)
     }
 
     return fmt.Sprintf("%.2fB", b)

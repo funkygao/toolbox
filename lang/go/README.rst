@@ -401,6 +401,17 @@ Func
     不支持java里的同名但参数不同的形式
 
 
+Test
+====
+
+benchmark
+---------
+
+::
+
+    gotest -test.bench=".*" -test.benchtime=5
+
+
 Internals
 =========
 
@@ -432,3 +443,15 @@ Remarks
 =======
 
 - init() is per file instead of per package
+
+- selector
+
+  In order to access the fields of a struct, whether the variable is of the 
+  struct type or a pointer to the struct type, we use the same selector-notation
+
+  ::
+
+        var t1 MyStruct
+        var t2 *MyStruct
+        t1.i
+        t2.i
