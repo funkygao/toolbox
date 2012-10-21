@@ -457,3 +457,22 @@ Remarks
         t2.i
 
 - Only the sender should close a channel, never the receiver
+
+- pipeline future
+
+  ::
+
+        func ParallelProcessData (in <- chan *Data, out <- chan *Data) {
+            // make channels:
+            preOut := make(chan *Data, 100)
+            stepAOut := make(chan *Data, 100)
+            stepBOut := make(chan *Data, 100)
+            stepCOut := make(chan *Data, 100)
+
+            // start parallel comutations
+            go PreprocessData(in, preOut)
+            go ProcessStepA(preOut, stepAOut)
+            go ProcessStepB(stepAOut, stepBOut)
+            go ProcessStepC(stepBOut, stepCOut)
+            go PostProcessData(stepCOut, out)
+        }
