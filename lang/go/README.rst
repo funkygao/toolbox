@@ -455,3 +455,5 @@ Remarks
         var t2 *MyStruct
         t1.i
         t2.i
+
+- Only the sender should close a channel, never the receiver

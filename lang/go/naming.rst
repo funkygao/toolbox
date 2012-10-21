@@ -8,6 +8,19 @@ Good naming examples
 .. contents:: Table Of Contents
 .. section-numbering::
 
+设计
+========
+
+::
+
+    Task
+    Worker
+
+    type Pool struct {
+        Mu sync.Mutex
+        Tasks []Task
+    }
+
 
 变量
 =========
