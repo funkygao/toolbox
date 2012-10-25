@@ -4,7 +4,7 @@ automatic type inference
 _ : blank identifier
 `we are`: raw string
 anonymous 
-type I int8: underlying type
+type I int8: named type, underlying type
 */
 package main
 

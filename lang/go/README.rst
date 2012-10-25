@@ -37,6 +37,8 @@ Syntax
 
 - no unused variable except '_'
 
+- has no abstract class
+
 - multiple return value
 
 - type infer
@@ -476,3 +478,12 @@ Remarks
             go ProcessStepC(stepBOut, stepCOut)
             go PostProcessData(stepCOut, out)
         }
+
+
+GoogleAppEngine
+===============
+
+::
+
+    cd /opt/app/google_appengine/demos
+    dev_appserver.py helloworld/

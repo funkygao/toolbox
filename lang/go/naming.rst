@@ -15,6 +15,7 @@ Good naming examples
 
     Task
     Worker
+    this.self
 
     type Pool struct {
         Mu sync.Mutex
@@ -31,6 +32,18 @@ Good naming examples
     wbuf := bufio.NewWriter(xxx)
 
     rw, e := listener.Accept()
+
+    expected, got
+
+类名
+=======
+
+type DefaultFoo struct {
+}
+
+type ConcreteFoo struct {
+    DefaultFoo
+}
 
 
 文件名
