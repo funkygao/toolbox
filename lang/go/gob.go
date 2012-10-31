@@ -2,7 +2,7 @@ package main
 
 import (
     "fmt"
-    json "encoding/gob"
+    "encoding/gob"
     "log"
     "os"
 )
@@ -18,22 +18,22 @@ type Vcard struct {
 }
 
 func main() {
-    const JSON_FILE = "vc.json"
+    const GOB_FILE = "vc.gob"
 
     pa := &Address{"private", "beijing", "China"}
     wa := &Address{"work", "shanghai", "China"}
     vc := Vcard{"funky", "gao", []*Address{pa, wa}, "none"}
 
-    file, _  := os.OpenFile(JSON_FILE, os.O_CREATE|os.O_WRONLY, 0600)
+    file, _  := os.OpenFile(GOB_FILE, os.O_CREATE|os.O_WRONLY, 0600)
 
-    enc := json.NewEncoder(file)
+    enc := gob.NewEncoder(file)
     if err := enc.Encode(vc); err != nil {
         log.Fatal(err)
     }
     //file.Close()
 
-    f, _ := os.Open(JSON_FILE)
-    dec := json.NewDecoder(f)
+    f, _ := os.Open(GOB_FILE)
+    dec := gob.NewDecoder(f)
     x := new(Vcard)
     fmt.Printf("%v %#v\n", dec.Decode(x), x)
 
