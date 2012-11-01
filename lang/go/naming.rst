@@ -33,6 +33,9 @@ Good naming examples
 
     rw, e := listener.Accept()
 
+    v, present := m[key]
+    v, found := m[key]
+
     expected, got
 
 类名
