@@ -21,7 +21,6 @@ type Response struct {
 }
 
 func main() {
-    fmt.Println(os.Args)
     var query = "golang"
     if len(os.Args) == 2 {
         query = os.Args[1]
@@ -35,6 +34,7 @@ func main() {
 	r := new(Response)
 	json.NewDecoder(resp.Body).Decode(r)
 	for _, d := range r.Data.Children {
-		fmt.Printf("%s\n\t%s\n\n", d.Data.Title, d.Data.Url)
+		fmt.Printf("%s\n\t%s\n\n", d.Data.Url, d.Data.Title)
 	}
+    println("Total", len(r.Data.Children))
 }
