@@ -9,6 +9,14 @@ go language
 .. contents:: Table Of Contents
 .. section-numbering::
 
+
+注意事项
+===============
+
+method
+------
+不能为其他包和basic type来定义其方法
+
 Command
 =======
 
@@ -18,9 +26,7 @@ Command
 
     go run -x my.go
 
-    go doc builtin
-
-    godoc fmt Println
+    godoc builtin
 
     godoc -http=":6060"
 
@@ -35,19 +41,9 @@ Features
 Syntax
 ------
 
-- no unused variable except '_'
-
 - has no abstract class
 
-- multiple return value
-
-- type infer
-
-- 类型后置
-
-  var foo int
-
-- pass by value
+- pass by value by default
 
   not by reference
 
@@ -65,11 +61,12 @@ runtime自动选择何时使用stack，何时使用heap
 
 go语言中使用的是非连续栈，原因是需要支持goroutine
 
-
 Access control
 --------------
 
 at the package level
+
+there is no sub-packge, each package is a seperated package
 
 import
 ------
@@ -79,10 +76,6 @@ A Go program or package’s imports are first searched for under the GOPATH path
 
 Builtin func
 ------------
-
-- close
-
-  关闭chan
 
 - new
 
@@ -97,7 +90,13 @@ Builtin func
 
 - make
 
-  用于内建类型的内存分配，仅用于slice, map, channel
+  用于内建类型的内存分配，仅用于
+  
+  - slice
+    
+  - map
+    
+  - channel
 
   make() always returns a reference to the value it created
 
@@ -114,38 +113,6 @@ Builtin func
 - copy
 
   copy slice
-
-- append
-
-  Append the elements to the end of the slice and return the result
-
-
-- panic
-
-  recover
-
-- println
-
-  print
-
-- len
-
-
-defer
------
-
-::
-
-    f, _ = os.Open(filename)
-    defer f.close()
-
-
-recover
--------
-
-::
-
-    str := recover()
 
 conversion
 ----------
@@ -175,22 +142,6 @@ goroutine
 - gc vs gccgo
 
   只有gc compiler会自动为goroutine分配线程，而gccgo只是为每个goroutine分配一个线程
-
-
-::
-
-    go myfunc() // similar to the Unix shell's & notation for running a command in the background
-
-    go func(delay int) {
-        time.Sleep(delay)
-        fmt.Println(msg)
-    }(10)
-
-    func myfunc() {
-        // xxx
-        runtime.Gosched() // yield the processor without suspend the current goroutine
-        // xxx
-    }
 
 
 channel
@@ -271,63 +222,8 @@ Performance
 
   on average 25 x faster than Python 3, uses 1/3 of the memory
 
-Missing
--------
-
-- assertions
-
-- dynamic lib
-
-- immutable var
-
-- exceptions 
-
-
 Usage
 =====
-
-print
------
-
-::
-
-    type Integer struct {
-        int32
-    }
-
-    i := Integer{5}
-    fmt.Printf("%T, %v, %#v, %+v\n", i, i, i, i)
-
-分组
---------
-
-适用于import, const, var, type
-
-::
-
-    import (
-        fm "fmt"
-        "os"
-    )
-
-    const (
-        PI = 3.14
-        PREFIX = "go_"
-    )
-
-    const (
-        Sunday = iota
-        Monday
-        Tuesday
-    )
-
-    type Color int
-    const (
-        Red Color = iota // 0
-        Blue             // 1
-        Green
-    )
-
 
 Redeclaration
 -------------
@@ -353,67 +249,6 @@ If
     }
 
 
-File Structure
---------------
-
-::
-
-    package main
-
-    import (
-        "fmt"
-    )
-
-    const c = "C"
-
-    var v int = 5
-
-    type T struct {
-    }
-
-    func init() {
-    }
-
-    func main() {
-    }
-
-    func (t T)Method1() {
-    }
-
-
-main
-----
-
-When the function main() returns, the program exits: 
-it does not wait for other (non-main) goroutines to complete.
-
-
-
-Func
-----
-
-- func
-
-- method
-
-  - Has receiver
-
-  - Every method name must be unique for any given type
-
-    不支持java里的同名但参数不同的形式
-
-
-Test
-====
-
-benchmark
----------
-
-::
-
-    gotest -test.bench=".*" -test.benchtime=5
-
-
 Internals
 =========
 
@@ -436,10 +271,6 @@ startup
             |
         main.main
 
-Cases
-=====
-
-- google map
 
 Remarks
 =======
@@ -457,8 +288,6 @@ Remarks
         var t2 *MyStruct
         t1.i
         t2.i
-
-- Only the sender should close a channel, never the receiver
 
 - pipeline future
 
