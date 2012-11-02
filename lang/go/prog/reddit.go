@@ -10,6 +10,11 @@ import (
 
 type Item struct {
 	Title, Url string
+    Comment int `json:"num_comments"`
+}
+
+func (this Item) String() string {
+    return fmt.Sprintf("%s (%d comments)\n\t%s\n", this.Url, this.Comment, this.Title)
 }
 
 type Response struct {
@@ -30,11 +35,12 @@ func main() {
 	if e != nil {
 		panic(e)
 	}
+    defer resp.Body.Close()
 
 	r := new(Response)
 	json.NewDecoder(resp.Body).Decode(r)
 	for _, d := range r.Data.Children {
-		fmt.Printf("%s\n\t%s\n\n", d.Data.Url, d.Data.Title)
+		fmt.Println(d.Data)
 	}
     println("Total", len(r.Data.Children))
 }
