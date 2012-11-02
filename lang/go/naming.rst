@@ -38,6 +38,8 @@ Good naming examples
 
     expected, got
 
+    t.Errorf("expected %d, got %d", expected, num)
+
 类名
 =======
 
