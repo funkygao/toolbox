@@ -309,6 +309,13 @@ Remarks
         }
 
 
+Pitfall
+=======
+
+map is not thread safe
+----------------------
+
+
 GoogleAppEngine
 ===============
 
