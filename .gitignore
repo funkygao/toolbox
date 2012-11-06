@@ -1,6 +1,7 @@
 *.log
 *bak-*
 *pyc
+*.json
 bench.xml
 ftest.xml
 funkload.xml
