@@ -1,6 +1,7 @@
 package main
 
 import (
+    "bytes"
     "fmt"
     "encoding/gob"
     "log"
@@ -37,4 +38,24 @@ func main() {
     x := new(Vcard)
     fmt.Printf("%v %#v\n", dec.Decode(x), x)
 
+    demoStr()
+
+}
+
+func demoStr() {
+    var buf bytes.Buffer
+    enc := gob.NewEncoder(&buf)
+    dec := gob.NewDecoder(&buf)
+
+    x := []string{"a", "cdef", "mq"}
+    buf.Reset()
+    enc.Encode(x)
+    result := buf.String()
+    fmt.Println(result)
+
+    xx := make([]string, 0)
+    buf.Reset()
+    buf.WriteString(result)
+    dec.Decode(&xx)
+    fmt.Printf("%#v\n", xx)
 }
