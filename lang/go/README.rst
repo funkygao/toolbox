@@ -309,6 +309,32 @@ Remarks
         }
 
 
+gdb
+===
+
+compile
+-------
+
+::
+
+    go build -gcflags "-N -l"
+
+cmd
+---
+
+::
+
+    info locals
+    info args
+
+    disas
+
+    whatis variable
+
+    b mypack.myfunc
+    b 'regexp.(*Regexp).String'
+
+
 Pitfall
 =======
 
