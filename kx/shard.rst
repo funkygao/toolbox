@@ -12,6 +12,22 @@ ID Generator
 Routing
 =======
 
+::
+
+    (kind, split_key)
+        |
+        | lookup(kind)
+        |
+    kind_setting
+        |
+        | lookup(kind, no=split_key % table_num)
+        |
+    table_setting
+        |
+        | lookup(sid)
+        |
+    server_setting
+
 mysql> desc kind_setting;
 
 +--------------+-------------+------+-----+---------+-------+
