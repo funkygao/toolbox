@@ -31,9 +31,9 @@ func callRpc() {
     }
 }
 
-
-
 func main() {
+    r := testing.Benchmark(benchmarkRpcCallDivide)
+    fmt.Println(r.T)
     fmt.Printf("%s\n", testing.Benchmark(benchmarkRpcCallDivide).String())
 }
 
