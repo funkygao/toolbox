@@ -9,26 +9,36 @@ ID Generator
 .. contents:: Table Of Contents
 .. section-numbering::
 
-Routing
+Current
 =======
+
+Routining
+---------
 
 ::
 
     (kind, split_key)
         |
         | lookup(kind)
-        |
+        V
     kind_setting
         |
         | lookup(kind, no=split_key % table_num)
-        |
+        V
     table_setting
         |
         | lookup(sid)
-        |
+        V
     server_setting
+        |
+    (host, port, user, pass)
 
-mysql> desc kind_setting;
+
+Mapping tables
+--------------
+
+kind_setting
+^^^^^^^^^^^^
 
 +--------------+-------------+------+-----+---------+-------+
 | Field        | Type        | Null | Key | Default | Extra |
@@ -41,7 +51,8 @@ mysql> desc kind_setting;
 | enable       | tinyint(1)  | NO   |     | 1       |       | 
 +--------------+-------------+------+-----+---------+-------+
 
-mysql> desc server_setting;
+server_setting
+^^^^^^^^^^^^^^
 
 +-----------------+------------------+------+-----+---------+----------------+
 | Field           | Type             | Null | Key | Default | Extra          |
@@ -58,7 +69,8 @@ mysql> desc server_setting;
 | backup_priority | int(11)          | YES  |     | 99      |                | 
 +-----------------+------------------+------+-----+---------+----------------+
 
-mysql> desc table_setting;
+table_setting
+^^^^^^^^^^^^^
 
 +---------+-------------+------+-----+---------+-------+
 | Field   | Type        | Null | Key | Default | Extra |
@@ -68,3 +80,30 @@ mysql> desc table_setting;
 | sid     | int(11)     | NO   |     | NULL    |       | 
 | db_name | varchar(64) | NO   |     | NULL    |       | 
 +---------+-------------+------+-----+---------+-------+
+
+Problem
+-------
+
+- hard to rebalance
+
+  - can only scale up to 2**N shards
+
+  - need 50% relocate data when N=1
+
+  - has stop-the-world
+
+- key not sorted
+
+
+Enhancement
+===========
+
+::
+
+    (s_user_info,     0, "user:pass@192.156.0.1:3367")
+    (s_user_info, 15000, "user:pass@192.156.0.2:3368")
+                  -----
+                  startId
+
+
+    regions are split in 2 at the middle key
