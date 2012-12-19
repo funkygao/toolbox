@@ -17,7 +17,8 @@ def main(tag):
             d = m.groupdict()
             pkg, func = d['pkg'], d['func']
             for t in tag:
-                if pkg.find(t)!=-1 or func.find(t)!=-1:
+                tl = t.lower()
+                if pkg.lower().find(tl)!=-1 or func.lower().find(tl)!=-1:
                     print pkg, func
 
 if __name__ == '__main__':
