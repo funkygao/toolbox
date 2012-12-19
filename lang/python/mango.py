@@ -3,22 +3,37 @@
 
 import re
 import sys
+import os
 
-r = re.compile(r'pkg (?P<pkg>\S+), func (?P<func>\S+).*')
+r = re.compile(r'pkg (?P<pkg>\S+), (?P<type>\S+) (?P<tag>.+).*')
 apifile = '/usr/local/go/api/go1.txt'
 
+def lookup(kws):
+    result = set()
+    for l in open(apifile):
+        m = r.match(l)
+        if not m:
+            continue
+        d = m.groupdict()
+        pkg, type, tag = d['pkg'], d['type'], d['tag']
+        tag = re.sub(r"\(.*?\)", '', tag) # discard func/method params
+        if type == 'method':
+            tag = tag.split(' ')[1] #[0] is the receiver
+        else:
+            tag = tag.split(' ')[0]
+        for kw in kws:
+            kw = kw.lower()
+            if pkg.lower().find(kw)!=-1 or tag.lower().find(kw)!=-1:
+                result.add((pkg, tag))
 
-def main(tag):
-    with open(apifile) as f:
-        for l in f:
-            m = r.match(l)
-            if not m:
-                continue
-            d = m.groupdict()
-            pkg, func = d['pkg'], d['func']
-            for t in tag:
-                if pkg.find(t)!=-1 or func.find(t)!=-1:
-                    print pkg, func
+    if len(result) == 1:
+        pkg, tag = result.pop()
+        os.system('godoc %s %s' % (pkg, tag)) # invoke godoc directly
+    else:
+        # we have to print the alternatives
+        for x in result:
+            pkg, tag = x
+            print 'godoc', pkg, tag.split(' ')[0]
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
@@ -26,4 +41,4 @@ if __name__ == '__main__':
         %s keyword, [keyword]''' % sys.argv[0]
         sys.exit(0)
 
-    main(sys.argv[1:])
+    lookup(sys.argv[1:])
