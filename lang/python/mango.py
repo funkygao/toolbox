@@ -28,12 +28,12 @@ def lookup(kws):
 
     if len(result) == 1:
         pkg, tag = result.pop()
-        os.system('godoc %s %s' % (pkg, tag)) # invoke godoc directly
+        os.system('godoc %s %s | less ' % (pkg, tag)) # invoke godoc directly
     else:
         # we have to print the alternatives
         for x in result:
             pkg, tag = x
-            print 'godoc', pkg, tag.split(' ')[0]
+            print 'godoc', pkg, tag.split(' ')[0], '| less'
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
