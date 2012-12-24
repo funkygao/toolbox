@@ -40,22 +40,22 @@ print "0. server stores (I, s, v) in its password database"
 I = "person"         # Username
 p = "password1234"   # Password
 s = cryptrand(64)    # Salt for the user
-x = H(s, p)          # Private key
-v = pow(g, x, N)     # Password verifier
+x = H(s, p)          # Private key derived from password and salt
+v = pow(g, x, N)     # Password verifier, now x is discarded because it is equivalent to the plaintext password
 global_print("I", "p", "s", "x", "v")
  
 print "1. client sends username I and public ephemeral value A to the server"
-a = cryptrand()
-A = pow(g, a, N)
+a = cryptrand() # Ephemeral private keys, generated randomly and not publicly revealed
+A = pow(g, a, N) # a's ephemeral public key
 global_print("I", "A")  # client->server (I, A)
  
 print "2. server sends user's salt s and public ephemeral value B to client"
-b = cryptrand()
-B = (k * v + pow(g, b, N)) % N
+b = cryptrand() # Ephemeral private keys, generated randomly and not publicly revealed
+B = (k * v + pow(g, b, N)) % N # b's ephemeral public key
 global_print("s", "B")  # server->client (s, B)
  
 print "3. client and server calculate the random scrambling parameter"
-u = H(A, B)  # Random scrambling parameter
+u = H(A, B)  # Random scrambling parameter, publicly revealed
 global_print("u")
  
 print "4. client computes session key"
