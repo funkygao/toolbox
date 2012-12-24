@@ -1,6 +1,15 @@
 # An example SRP-6a authentication
 # WARNING: Do not use for real cryptographic purposes beyond testing.
 # based on http://srp.stanford.edu/design.html
+'''
+password = private key 
+verifier = public key 
+
+The public key(or verifier): is easily computed from the password, yet deriving the password from the verifier is computationally infeasible. 
+Instead of being publicly-known, however, the verifier is kept secret by the server.
+
+SRP is verifier-based mechanism instead of plaintext-equivalent mechanism.'''
+
 import hashlib
 import random
  
