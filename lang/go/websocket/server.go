@@ -9,7 +9,8 @@ import (
 
 func main() {
     http.Handle("/", websocket.Handler(handler))
-    http.ListenAndServe(":4000", nil)
+    log.Println("listen on :4000")
+    http.ListenAndServe("localhost:4000", nil)
 }
 
 func handler(ws *websocket.Conn) {
