@@ -12,45 +12,85 @@ yangguang@corp.kaixin001.com
 =========================
 KXI接口
 ------------------
-- 设置新帐号::
+
+COOKIE['_user']  => uid
+
+- 注册新帐号::
+    1                                       <-
+
+    DReg_Func::regUser(params) {
+        check(ip)
+        get uid from idman
+        insert into s_user_info(account)    <-
+        insert into s_login_ex              <- 双写到 (s_accounts, s_user_accounts)
+        s_user_moreinfo(passwd)             <-
+        CUserRegister::addUserRegInfo
+    }
+
+    为了隔离数据库?
+    为了方便调用?
 
     => createAccount {account^%S; passwd^%S}
     <= {uid^%i}
 
 - 给已有uid绑定一个新帐号::
+    1                                       <-
+
+    DSecurity_Email_Control::c_chgEmail(params) {
+        s_user_moreinfo.newemail
+        insert into s_emailinfo
+        send notification to old account    <-
+    }
     
+    需要实现如上所有逻辑?
+
     => bindAccount {uid^%i; account^%S}
     <= {ok^%b}
 
 - 帐号密码认证::
+    45                                      <-
+
+    DCredential_KxiApi::validatePwd(uid, pwd)
+
+    登录后，session里存uid or account?
+    pwd目前在s_user_info里，换地方?
     
     => validateAccountPasswd {account^%S; passwd^%S}
     <= {ok^%b; ?uid^%i; ?session^%S}
+
+- 基于帐号获取uid::
+
+    CUser->getUidByEmail(email)
+    s_login_ex
+    
+    => getUidByAccount {account^%S}
+    <= {ok^%b; ?uid^%i}
+
+- 获取基本注册信息::
+
+    CUser
+
+   => getUserRegistration {uid^%i}
+   <= {ok^%b; realname^%S; gender^%S; birthday^%S; ctime^%S}
 
 - 登录Session验证::
     
     => validateSession {session^%S}
     <= {ok^%b; ?uid^%i}
 
-- 基于帐号获取uid::
-    
-    => getUserId {account^%S}
-    <= {ok^%b; ?uid^%i}
-
-- 获取基本注册信息::
-
-   => getUserRegistration {uid^%i}
-   <= {ok^%b; realname^%S; gender^%S; birthday^%S; ctime^%S}
-
 - 创建基本注册信息
 - 更改基本注册信息
 
 - 修改密码::
 
+    DCredential_KxiApi::setPwd(uid, pwd, autocreate = true)
+
     => changeAccountPasswd {account^%S; oldpasswd^%S; newpasswd^%S}
     <= {ok^%b; ?uid^%i}
     
 - 修改帐号::
+
+    DSecurity_Email_Control::c_chgEmail(params)
 
     => changeAccount {oldaccount^%S; newaccount^%S; passwd^%S}
     <= {ok^%b; ?uid^%i}
@@ -161,3 +201,34 @@ HTTP接口/网页形式出现, 通过各类支付手段充值到账户中的开心币，接口部署到 https://
 开放平台帐号绑定
 ============================
 TBD
+
+
+
+
+
+
+>>> from kx.proxy import Delegate
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ImportError: No module named proxy
+>>> from kxi.proxy import Delegate
+>>> p = Delegate('account@::9999')
+>>> p.call('\0')
+{'methods': ['create_account', 'delete_account', 'get_accounts', 'get_uid']}
+>>> p.create_account(uid=54321, account='test123')
+{'ok': True}
+>>> p.create_account(uid=54321, account='test1236')
+{'ok': True}
+>>> p.get_accounts(uid=54321)
+{'list': [['test123', '2013-01-08 12:41:17'], ['test1236', '2013-01-08 12:41:22']], 'ok': True}
+>>> p.create_account(uid=5432, account='test123')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "build/bdist.linux-x86_64/egg/kxi/proxy.py", line 288, in wrap
+  File "build/bdist.linux-x86_64/egg/kxi/proxy.py", line 281, in call
+  File "build/bdist.linux-x86_64/egg/kxi/proxy.py", line 267, in request
+  File "build/bdist.linux-x86_64/egg/kxi/proxy.py", line 259, in recv
+kxi.proxy.Error: proxy.Error({'exception': 'MySQLdb::Error', 'code': 1062L, 'raiser': 'sQuery*DBMan @tcp:192.168.0.140:12321, sQuery*DBMan @tcp:127.0.0.1:9999, create_account*account @tcp:127.0.0.1:9999', 'message': "host=192.168.0.140:3309, mysql_error=Duplicate entry 'test123' for key 1", 'detail': {'what': "MySQLdb::Error(1062) at MySQLdb.cpp:325 --- host=192.168.0.140:3309, mysql_error=Duplicate entry 'test123' for key 1\nsql=INSERT INTO s_accounts_1 (`account`, `uid`) VALUES ('test123', '5432')", 'line': 325L, 'file': 'MySQLdb.cpp', 'calltrace': './DBManServer _ZN7MySQLdb5ErrorC1EPKciiRKSs\n./DBManServer _ZN7MySQLdb5queryEPKcmS1_PNS_9ResultExtE\n./DBManServer _ZN9SQueryJob4doitERK4XPtrI12DBConnectionE\n./DBManServer _ZN6DBTeam4workERK4XPtrI5DBJobEb\n./DBManServer _ZN9DBCluster9assignJobERK4XPtrI5DBJobE\n./DBManServer _ZN5DbMan12_kxi__sQueryERK4XPtrI6KQuestERKN3kxi7CurrentE\n./DBManServer _ZN3kxi22process_servant_methodEPNS_7ServantEPK9SymbolTabIMS0_F4XPtrI7KAnswerERKS3_I6KQuestERKNS_7CurrentEEES9_SC_\n./DBManServer _ZN3kxi8ServantI7processERK4XPtrI6KQuestERKNS_7CurrentE\n./DBManServer _ZN3kxi11ConnectionI12handle_questERNS_8CurrentIE\n./DBManServer _ZN3kxi12PtConnection7do_readERK4XPtrIN6XEvent10DispatcherEE\n./DBManServer _ZN3kxi12PtConnection11event_on_fdERK4XPtrIN6XEvent10DispatcherEEi\n./DBManServer _ZN6XEvent9EpollDisp4workEv\n./DBManServer [0x4a29b5]'}})
+>>> p
+<kxi.proxy.Delegate object at 0x2ab1bad7bd10>
+>>> 
