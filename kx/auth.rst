@@ -10,61 +10,6 @@ authentication
 .. section-numbering::
 
 
-SRP
-===
-
-http://srp.stanford.edu/design.html
-
-js
---
-
-register
-^^^^^^^^
-
-::
-    
-    srp = new SRP();
-    srp.register();
-
-        -> handshake(username)
-        <- salt
-        -> send_verifier(verifier)
-
-login
-^^^^^
-
-::
-
-    srp = new SRP();
-    srp.identify();
-
-        -> handshake(username, A)
-        <- salt, B
-        -> confirm_authentication(M)
-
-
-Weak Authentication
--------------------
-
-- plaintext password
-
-- encoded password
-
-  e,g HTTP Basic authentication
-
-  ::
-
-        client request:
-            s := username + ":" + password
-            r.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(s)))
-
-        server:
-            
-
-- challange-response authentication
-
-  User recv C, responds with f(C, P)
-
 认证入口
 =================
 nginx
@@ -74,20 +19,55 @@ POST https://security.kaixin001.com/login/login_auth.php
 
 Form data:
 
-email: funky.gao@163.com
+::
 
-password: xxxxxx
-
-
-POST POST https://security.kaixin001.com/login/login_probe.php
+    email: funky.gao@163.com
+    password: xxxxxx
 
 
-API
+POST https://security.kaixin001.com/login/login_probe.php
+
+
+SSO
 ===
 
 ::
 
-    cuser.getUidByEmail
+        after user login success
+                |
+            /login/check_cookie.php
+                    |
+            sign = genSSOSign(_uid, time(), remoteIp) 
+                    |
+            mc.set(_uid, (sign, _uid))
+                    |
+            <script src='/login/set_cookie.php?sign=$sign'></script>
+                        |
+                validate sign
+                        |
+                header("P3P: CP=CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR");
+                        |
+                setcookies
 
-    validatePwd
-        DCredential_KxiApi
+
+
+rememberMe
+==========
+
+::
+
+        setRememberCookie
+                |
+            insert into s_user_persist_login(uid, series, token)
+            verify = base64_encode($uid . ':' . $series . ':' . $token);  
+            setcookie('_kx', verify, 1 year)
+
+
+        getRememberCookie
+                |
+            getcookie('_kx')
+            verify = renew_token()
+                    |
+                insert into s_user_persist_login(uid, series, token)
+                |
+            setcookie('_kx', verify, 1 year)
