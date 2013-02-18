@@ -12,3 +12,7 @@ class Configured:
 
 def app_factory(global_config, name='Johnny', greeting='Howdy'):
     return Configured(name, greeting)
+
+def filter_factory(global_config):
+    from caseless import Caseless
+    return Caseless(global_config)
