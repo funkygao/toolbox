@@ -3,7 +3,9 @@ package main
 import (
     "fmt"
     "testing"
+    "os"
     "net/rpc"
+    "runtime/pprof"
 )
 
 type Args struct {
@@ -14,12 +16,16 @@ type Quotient struct {
     Quo, Rem int 
 }
 
+var client *rpc.Client
+var e error
+
 func callRpc() {
-    client, e := rpc.DialHTTP("tcp", ":1234")
+    if client == nil {
+    client, e = rpc.DialHTTP("tcp", ":1234")
     if e != nil {
         panic(e)
     }
-    defer client.Close()
+}
 
     args := Args{5, 2}
     var reply Quotient
@@ -32,8 +38,19 @@ func callRpc() {
 }
 
 func main() {
-    r := testing.Benchmark(benchmarkRpcCallDivide)
-    fmt.Println(r.T)
+    f, e := os.Create("a.prof")
+    if e != nil {
+        panic(e)
+    }
+
+    e = pprof.StartCPUProfile(f)
+    if e != nil {
+        panic(e)
+    }
+
+    defer pprof.StopCPUProfile()
+    //r := testing.Benchmark(benchmarkRpcCallDivide)
+    //fmt.Println(r.T)
     fmt.Printf("%s\n", testing.Benchmark(benchmarkRpcCallDivide).String())
 }
 

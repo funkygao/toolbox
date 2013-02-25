@@ -232,3 +232,114 @@ kxi.proxy.Error: proxy.Error({'exception': 'MySQLdb::Error', 'code': 1062L, 'rai
 >>> p
 <kxi.proxy.Delegate object at 0x2ab1bad7bd10>
 >>> 
+
+
+停用帐号
+    |
+    |- 用户主动
+    |- 审核
+    |
+    |- 恢复帐号
+
+绑定帐号
+    |
+    |- 绑定邮箱
+
+
+认证入口
+=================
+nginx
+
+
+POST https://security.kaixin001.com/login/login_auth.php
+
+Form data:
+
+email: funky.gao@163.com
+
+password: xxxxxx
+
+
+POST POST https://security.kaixin001.com/login/login_probe.php
+
+
+API
+===
+
+::
+
+    cuser.getUidByEmail
+
+    validatePwd
+        DCredential_KxiApi
+
+
+bind account
+============
+
+   POST https://security.kaixin001.com/set/validatepwd.php 
+   GET https://security.kaixin001.com/set/email.php?flag=11 
+   GET https://security.kaixin001.com/set/email_ok.php
+
+/Users/gaopeng/kx/src/platform/security/www/htdocs_security/set/validatepwd.php
+
+DSecurity_Control
+
+DSecurity_Pwd_Control
+DSecurity_Email_Control:c_chgEmail   s_emailinfo
+
+
+register
+========
+
+http://www.kaixin001.com/register/reg_submit.php
+
+DReg_Func::regUser
+
+DUser_Identity
+
+DLogin_Func::checkAccount
+
+[gaopeng@10.13.221.244 ~]$ grep KXI_AUTH /kx/dlog/zlog | cut -d' ' -f6 | cut -d'+' -f1,2 | sort | uniq -c|sort -nr
+    747 POST+security.kaixin001.com/login/login_auth.php
+     84 POST+www.kaixin001.com/login/login_auth.php
+     31 POST+www.kaixin001.com/interface/sso/login.php
+     22 POST+security.kaixin001.com/interface/sso/login.php
+     15 POST+wap.kaixin001.com/home/index.php
+     14 POST+api.kaixin001.com/oauth/access_token
+      7 POST+3g.kaixin001.com/home/index.php
+      6 POST+www.kaixin001.com/login/login.php
+      5 /SAMPLE:1/S
+      4 POST+www.kaixin001.com/login/oauth/aj_oauth_bind.php
+      3 POST+iphone.kaixin001.com/home/index.php
+      3 POST+api.kaixin001.com/oauth/access_token.json
+      3 GET+ksa2.kaixin001.com/login/login.php
+      2 POST+wap.kaixin001.com/reg/reg_success.php
+      2 POST+security.kaixin001.com/pwd/changepwd_ok.php
+      1 /SAMPLE:1000/S
+      1 POST+www.kaixin001.com/set/set_question_dialog.php
+      1 POST+wap.kaixin001.com/sms/smsmo.php
+      1 POST+serve.intra.kaixin001.com/teleport.php
+      1 POST+security.kaixin001.com/login/login_post.php
+      1 POST+reg.kaixin001.com/register/aj_submit.php
+      1 POST+login.kaixin001.com/login/login_auth.php
+      1 GET+api.kaixin001.com/interface/user_redirect_agent.php
+
+
+
+
+TODO
+====
+
+::
+
+    changeAccount {oldaccount^%S; newaccount^%S; passwd^%S}
+
+    changeAccountPasswd
+
+    用户注册信息表 vs s_user_info_0
+
+
+    validatePwd  44
+    validateAccountPasswd
+
