@@ -26,11 +26,12 @@ class UmgmtService(object):
 
     BASE_DIR = tempfile.gettempdir()
     SOCK_SUFFIX = '.sock'
-    LAME_DUCK_PERIOD_SECOND = 21
+    CMD_READY = 'ready'
+    LAME_DUCK_PERIOD_SECOND = 2
 
     def __init__(self, server, name):
+        assert hasattr(server, 'stop')
         self.server = server
-        assert hasattr(self.server, 'stop')
         self.name = name
 
     @property
@@ -91,6 +92,9 @@ class UmgmtService(object):
         c, addr = sock.accept()
         print >>sys.stderr, 'accepted'
 
+        # on accepted, send 'ready' to let client go ahead
+        c.sendall(self.CMD_READY)
+
         # send listener fd and then close the listener right now
         passfd.sendfd(c, self.server.socket)
 
@@ -105,6 +109,7 @@ class UmgmtService(object):
 
     def _shutdown_server(self, sock):
         # get listener fd from previous server instance
+        ready = sock.recv(len(self.CMD_READY))
         listenerfd, msg = passfd.recvfd(sock)
         return listenerfd
 
