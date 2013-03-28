@@ -38,8 +38,8 @@ class UmgmtService(object):
     def _sockpath(self):
         return os.path.join(self.BASE_DIR, self.name + self.SOCK_SUFFIX)
 
-    def _dialServer(self):
-        '''_dial() -> sock, errno
+    def _dial_server(self):
+        '''_dial_server() -> sock, errno
 
         client connect to server on unix domain socket.
         '''
@@ -66,7 +66,7 @@ class UmgmtService(object):
                 break
             except socket.error as e:
                 if e[0] == errno.EADDRINUSE:
-                    c, err = self._dialServer()
+                    c, err = self._dial_server()
                     if err is None:
                         # a server is running on this host
                         os.remove(self._sockpath)
