@@ -57,7 +57,7 @@ class UmgmtService(object):
                     if err is None:
                         # a server is running on this host
                         os.remove(self._sockpath)
-                        self._shutdownServer(c)
+                        self._shutdown_server(c)
                     elif err == errno.ECONNREFUSED or err == errno.ENOTSOCK:
                         # sock exists, but server was lost or invalid sock file
                         # and then, try bind() again
@@ -82,7 +82,7 @@ class UmgmtService(object):
         gevent.sleep(2)
         sys.exit(0)
 
-    def _shutdownServer(self, sock):
+    def _shutdown_server(self, sock):
         sock.sendall(self.CMD_SHUTDOWN)
         #self.server.set_listener(passed_sockfd)
 
