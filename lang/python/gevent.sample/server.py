@@ -20,8 +20,8 @@ def make_server(handler, host='localhost', port=8990):
 
 def handler(sock, addr):
     print sock, addr
-    gevent.sleep(1)
-    sock.sendall('hello, 112\n')
+    #gevent.sleep(1)
+    sock.sendall('hello, lucy\n')
 
 if __name__ == '__main__':
     server = make_server(handler)

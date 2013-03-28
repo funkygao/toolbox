@@ -3,6 +3,7 @@ import os
 import sys
 import errno
 import gevent
+import passfd
 
 class Umgmt(object):
     def __init__(self, server):
@@ -51,12 +52,15 @@ class Umgmt(object):
         data = conn.recv(1024)
         print 'got', data
         self.server.stop()
-        gevent.sleep(1)
+        #self.server.stop_stop_accepting()
+        gevent.sleep(2)
         print 'bye, old'
         sys.exit(0)
 
     def shutdown(self, sock):
+        print 'start send shutdown'
         sock.sendall('blah')
+        #self.server.set_listener(passed_sockfd)
         print 'blah sent'
 
 
