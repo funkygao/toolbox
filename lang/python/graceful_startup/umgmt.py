@@ -15,6 +15,7 @@ It does not function in 1 case:
 import socket
 import os
 import sys
+import time
 import errno
 import gevent
 import passfd
@@ -90,7 +91,7 @@ class UmgmtService(object):
         # at this time, self.server.serve_forever() must be called
         # so that self.server.socket is not empty
         c, addr = sock.accept()
-        print >>sys.stderr, 'accepted'
+        print >>sys.stderr, time.ctime(), 'accepted'
 
         # on accepted, send 'ready' to let client go ahead
         c.sendall(self.CMD_READY)
@@ -102,14 +103,15 @@ class UmgmtService(object):
         #self.server.stop() 
         self.server.socket.close()
 
-        print >>sys.stderr, 'waiting for worker to finish after %d seconds...' % self.LAME_DUCK_PERIOD_SECOND
+        print >>sys.stderr, time.ctime(), 'waiting for worker to finish after %d seconds...' % self.LAME_DUCK_PERIOD_SECOND
         gevent.sleep(self.LAME_DUCK_PERIOD_SECOND)
         self.server.stop()
-        print >>sys.stderr, 'bye!'
+        print >>sys.stderr, time.ctime(), 'bye!'
 
     def _shutdown_server(self, sock):
         # get listener fd from previous server instance
         ready = sock.recv(len(self.CMD_READY))
+        #gevent.sleep(1)
         listenerfd, msg = passfd.recvfd(sock)
         return listenerfd
 

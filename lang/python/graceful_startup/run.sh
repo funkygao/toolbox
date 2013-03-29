@@ -1,7 +1,7 @@
-for i in `seq 900000`
+for i in `seq 10000`
 do
-    #telnet localhost 8990
-    nc localhost 8990
+    sleep 2
+    ./server.py 
     if [ $? -eq 0 ]; then
         echo 
     else

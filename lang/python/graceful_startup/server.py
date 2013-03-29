@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from gevent.server import StreamServer
 from gevent import monkey; monkey.patch_all()
+from gevent.server import StreamServer
 from gevent.pool import Pool
 import os
 import time
@@ -20,7 +20,7 @@ def make_server(handler, host='localhost', port=8990):
     return server
 
 def handler(sock, addr):
-    print sock, addr, time.ctime()
+    print time.ctime(), sock, addr
     sock.sendall('hello, lucy, bye\n')
     sock.sendall(str(addr) + "\n")
     gevent.sleep(1)
@@ -28,6 +28,6 @@ def handler(sock, addr):
 
 if __name__ == '__main__':
     server = make_server(handler)
-    print 'server started:', server, 'at', time.ctime()
+    print time.ctime(), 'server started:', server
     server.start()
     server.serve_forever()
