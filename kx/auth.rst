@@ -54,6 +54,8 @@ SSO
 rememberMe
 ==========
 
+换票机制
+
 ::
 
         setRememberCookie
