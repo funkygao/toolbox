@@ -27,16 +27,26 @@ class UmgmtService(object):
 
     BASE_DIR = tempfile.gettempdir()
     SOCK_SUFFIX = '.sock'
-    CMD_READY = 'ready'
-    LAME_DUCK_PERIOD_SECOND = 2
+    WORKER_NUM_SUFFIX = '.num'
+    LAME_DUCK_PERIOD_SECOND = 1
 
-    def __init__(self, server, name):
+    def __init__(self, server, name, accepted):
         assert hasattr(server, 'stop')
         self.server = server
         self.name = name
+        self.accepted = accepted
+
+    @property
+    def _workernpath(self):
+        '''IPC through this temp file
+
+        Parent tells how many accepted sockets exist through this temp file.
+        '''
+        return os.path.join(self.BASE_DIR, self.name + self.WORKER_NUM_SUFFIX)
 
     @property
     def _sockpath(self):
+        '''Unix domain socket file'''
         return os.path.join(self.BASE_DIR, self.name + self.SOCK_SUFFIX)
 
     def _dial_server(self):
@@ -54,7 +64,7 @@ class UmgmtService(object):
     def listen_and_serve(self):
         '''listen_and_serve() -> None | previous server listener socket fd
         '''
-        privious_listener = None
+        privious_listener, accepted_socks = None, None
 
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -63,7 +73,7 @@ class UmgmtService(object):
         for i in range(2):
             try:
                 s.bind(self._sockpath)
-                # if succeed(no server is running on this host), goto _start_accept()
+                # if succeed(no server is running on this host), goto _start_accepting()
                 break
             except socket.error as e:
                 if e[0] == errno.EADDRINUSE:
@@ -71,7 +81,7 @@ class UmgmtService(object):
                     if err is None:
                         # a server is running on this host
                         os.remove(self._sockpath)
-                        privious_listener = self._shutdown_server(c)
+                        privious_listener, accepted_socks = self._shutdown_server(c)
                     elif err == errno.ECONNREFUSED or err == errno.ENOTSOCK:
                         # invalid sock file exists
                         os.remove(self._sockpath)
@@ -82,26 +92,55 @@ class UmgmtService(object):
                     # unkown error
                     raise
 
-        # waiting for next server instance startup handshake
+        # waiting for new server instance startup handshake
         s.listen(1)
-        gevent.spawn(self._start_accept, s)
-        return privious_listener
+        gevent.spawn(self._start_accepting, s)
+        return privious_listener, accepted_socks
 
-    def _start_accept(self, sock):
+    def _notify_worker_fds_num(self, n):
+        with open(self._workernpath, 'w') as f:
+            f.write(str(n))
+
+    def _get_worker_fds_num(self):
+        return int(open(self._workernpath, 'r').read())
+
+    def _start_accepting(self, sock):
+        '''
+                    server1                 server2
+                       |                dial   |
+                       |<----------------------|
+                       | accept                |
+                       |                       |
+                       | listener fd           |
+                       |---------------------->|
+                       |                       |
+                       | num of worker fds     |
+                       |---------------------->|
+                       |                       |
+                       | worker fd 1by1        |
+                       |---------------------->|
+                       |                       |
+        '''
         # at this time, self.server.serve_forever() must be called
         # so that self.server.socket is not empty
         c, addr = sock.accept()
-        print >>sys.stderr, time.ctime(), 'accepted'
+        print >>sys.stderr, time.ctime(), 'accepted from', c
 
-        # on accepted, send 'ready' to let client go ahead
-        c.sendall(self.CMD_READY)
+        os.unlink(self._workernpath)
 
         # send listener fd and then close the listener right now
+        print >>sys.stderr, time.ctime(), 'sending listener', self.server.socket
         passfd.sendfd(c, self.server.socket)
 
-        # stop accepting new connections, it will reap it's worker threads
-        #self.server.stop() 
-        self.server.socket.close()
+        # close my listener, so that my accepted workers will be snapshotted
+        self.server.socket.close() 
+
+        self._notify_worker_fds_num(len(self.accepted))
+
+        # pass fd of worker one by one
+        for s in self.accepted:
+            print >>sys.stderr, time.ctime(), 'sending client fd', s
+            passfd.sendfd(c, s)
 
         print >>sys.stderr, time.ctime(), 'waiting for worker to finish after %d seconds...' % self.LAME_DUCK_PERIOD_SECOND
         gevent.sleep(self.LAME_DUCK_PERIOD_SECOND)
@@ -109,12 +148,22 @@ class UmgmtService(object):
         print >>sys.stderr, time.ctime(), 'bye!'
 
     def _shutdown_server(self, sock):
+        '''
+        TODO divide this into 2 parts:
+            1. pass listener socket
+            2. pass accepted sockets
+        '''
         # get listener fd from previous server instance
-        ready = sock.recv(len(self.CMD_READY))
-        #gevent.sleep(1)
         listenerfd, msg = passfd.recvfd(sock)
-        return listenerfd
+        print >>sys.stderr, time.ctime(), 'got listener', listenerfd
 
-def graceful_startup(server, name):
-    return UmgmtService(server, name).listen_and_serve()
+        accepted = set()
+        for _ in range(self._get_worker_fds_num()):
+            a, msg = passfd.recvfd(sock)
+            print >>sys.stderr, time.ctime(), 'recved accepted', a
+            accepted.add(a)
+        return listenerfd, accepted
+
+def graceful_startup(server, name, accepted):
+    return UmgmtService(server, name, accepted).listen_and_serve()
 
