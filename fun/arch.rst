@@ -156,13 +156,6 @@ Dataflow
 
 
 
-Terms
-=====
-
-- snsidAndUid
-
-- 
-
 Backend
 ============
 
