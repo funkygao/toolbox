@@ -21,100 +21,59 @@ LoC
 
   4258
 
+
+OpenSource
+==========
+
+- aws
+  CentOS
+
+- supervisord
+
+- munin/nagios
+
+- mongodb
+
+  mdadm raid0
+
+- memcache
+
+- haproxy
+
+- nginx/php-fpm
+
+- syslog-ng
+
+- postfix
+
 QA
 ==
 
 - why both munin and nagios
 
-- supervisord
-
 - multiple role for a single aws instance?
-
-- mongodb mdadm raid0
 
 - fastcgi_finish_request()
 
 - royal-flashlog.socialgamenet.com/loading.php?check=1930761&uid=1&step=1.x
 
-batch_token
-batch_number
-userguid
+- userguid
 
-
-data/config/class.php
-
-session  ttl=3 days, if age>1, refresh timestamp
-    $_COOKIE['rs_session'] = f06d631388e78bcdfd83241f095bef7a0df6399c,1,1377824579
-                             ======================================== = ==========
-                             hash                                     uid time
-                             hash = sha1($sCookie.self::$_sessionSecret.$sUserAgent);
-
-
-
-Servers
-=======
-
-- web
-
-  nginx
-
-- proxy
-
-  HAProxy
-
-- mongo
-
-- cache
-
-  memcached
-
-- admin
-
-  can't login
-
-- onebox
-
-  for dev, memcached/mongo/nginx
-
-- log
-
-  flashlog
-
-  
-Ops
-===
-
-- munin
-
-  Like cacti, a monitoring tool
-
-- nagios
-
-  Alerting tool
-
-
-
-
-Munin  /etc/munin/
-CentOS
-
-nginx version: nginx/0.8.55
-built by gcc 4.1.2 20080704 (Red Hat 4.1.2-52)
-TLS SNI support disabled
-configure arguments: --user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --http-client-body-temp-path=/var/lib/nginx/tmp/client_body --http-proxy-temp-path=/var/lib/nginx/tmp/proxy --http-fastcgi-temp-path=/var/lib/nginx/tmp/fastcgi --http-uwsgi-temp-path=/var/lib/nginx/tmp/uwsgi --http-scgi-temp-path=/var/lib/nginx/tmp/scgi --pid-path=/var/run/nginx.pid --lock-path=/var/lock/subsys/nginx --with-http_ssl_module --with-http_realip_module --with-http_addition_module --with-http_xslt_module --with-http_image_filter_module --with-http_geoip_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_degradation_module --with-http_stub_status_module --with-http_perl_module --with-mail --with-file-aio --with-mail_ssl_module --with-ipv6 --with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m64 -mtune=generic' --with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m64 -mtune=generic'
-
-Dataflow
-========
-
-https://royal-us.socialgamenet.com
-
-::
+- banner
 
     https://banner-api.socialgamenet.com/loader.php?site=playroyalstory_it&wrap=royal-banner1
     https://banner-api.socialgamenet.com/loader.php?site=playroyalstory1_it&wrap=royal-inbox-hide-cont
 
+session  ttl=3 days, if age>1, refresh timestamp
+    $_COOKIE['rs_session'] = f06d631388e78bcdfd83241f095bef7a0df6399c,1,1377824579
+                             ======================================== = ==========
+                                                                      uid time
+                             hash = sha1(self::$_sessionSecret.$sUserAgent);
 
-Ajax
+
+Dataflow
+========
+
 ::
 
     https://d3mxhpy50zysgx.cloudfront.net/v3/7622/main/it/Preloader.swf
@@ -192,26 +151,9 @@ Ajax
                         | memcache.so                |
                         | memcached.so               |
                         | mongo.so                   |
-                        | openssl.so                 |
-                        | redis.so                   |
-                        | zlib.so                    |
                          ----------------------------
 
 
-
-dns
----
-
-::
-
-    royal-us.socialgamenet.com. 594 IN  A   54.245.252.91
-    royal-us.socialgamenet.com. 594 IN  A   54.245.245.182
-    royal-us.socialgamenet.com. 594 IN  A   54.244.122.94
-
-haproxy
--------
-
-maxconn 80000
 
 
 Terms
@@ -221,7 +163,7 @@ Terms
 
 - 
 
-Component
+Backend
 ============
 
 ::
@@ -233,17 +175,3 @@ Component
        |        ALS             |
        | (ApplicationLogSystem) |
         ------------------------
-
-        ------------------------
-       |        FPG             |
-       | (ApplicationLogSystem) |
-        ------------------------
-
-
-
-        https://d3mxhpy50zysgx.cloudfront.net/v3/7622/main/en/Main.swf
-            |
-            V
-        /persist/load_user_data/?key=13777723975820.73046875
-
-https://royal-qa.socialgamenet.com//persist/load_user_data/?key=13777713134090.35546875&userguid=1&sendVersion=0&hashed_id=sntpi-Vz-bfgRMASDEvpcmvIRCKQiiERP9txDwdtM6QUDPpUA&IQ=NaN&user=100003391571259&flashVersion=7625&load_user_id=100003391571259&sendTime=0&session_key=1377572374&batch_token=null&_date=Thu%20Aug%2029%2018%3A33%3A17%20GMT%2B0800%202013&secret=eb7cbcb1e7c1a7e34f9095be60639be5&locale=us&load_hashed_id=sntpi-Vz-bfgRMASDEvpcmvIRCKQiiERP9txDwdtM6QUDPpUA
