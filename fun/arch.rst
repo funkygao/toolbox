@@ -179,3 +179,22 @@ Backend
        |        ALS             |
        | (ApplicationLogSystem) |
         ------------------------
+
+
+TODO
+====
+
+WebIM
+-----
+
+- jabber
+
+  XMPP
+
+- bosh
+
+  Bidirectional-streams Over Synchronous HTTP
+
+  XMPP XEP-0124
+
+  http://www.iteye.com/topic/126428
