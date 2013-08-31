@@ -9,6 +9,17 @@ Fun+ Infrastructure
 .. contents:: Table Of Contents
 .. section-numbering::
 
+Gaming
+======
+
+- 角色扮演类
+
+- 策略类
+
+  更偏重于游戏的策略性和逻辑性，也就是考验游戏玩家的各种组合或搭配之类的游戏，对实时性的要求不会很高
+
+- 混合类
+
 
 LoC
 ===
