@@ -77,8 +77,8 @@ QA
 
 session  ttl=3 days, if age>1, refresh timestamp
     $_COOKIE['rs_session'] = f06d631388e78bcdfd83241f095bef7a0df6399c,1,1377824579
-                             ======================================== = ==========
-                                                                      uid time
+                             ======================================== = ==============
+                                                                      uid request time
                              hash = sha1(self::$_sessionSecret.$sUserAgent);
 
 
@@ -198,3 +198,88 @@ WebIM
   XMPP XEP-0124
 
   http://www.iteye.com/topic/126428
+
+Versions
+========
+
+- memcached
+
+  1.4.5
+
+- memcache.so
+
+  2.2.6
+
+- eAccelerator
+
+  0.9.6.1
+
+- mongo.so
+
+  1.3.7
+
+
+Publishment
+===========
+
+::
+
+                  local work
+        develop <------------> coding
+          |
+          |  http://royal-qa.socialgamenet.com/qa/index.html -> https://royal-qa.socialgamenet.com/
+          V
+        royal_th ===========> royal-th.socialgamenet.com
+          |
+          | 1-2 days latter
+          V
+        master
+          ^
+          | git pull
+          |                 - royal-ae.socialgamenet.com
+        royal_{locale}s => |- royal-de.socialgamenet.com
+                           |- royal-fr.socialgamenet.com
+                           |- royal-fr.socialgamenet.com
+                           |- royal-nl.socialgamenet.com
+                           |- royal-spil.socialgamenet.com
+                            - royal-us.socialgamenet.com
+
+
+Schema
+======
+
+- user
+
+  UserAccountModel
+
+  ::
+
+        ban
+
+
+
+
+Memcache
+========
+
+=============================== ==================
+key                             value
+=============================== ==================
+check_flash_time_{uid}          load_userdata time
+
+=============================== ==================
+
+
+::
+
+        / (facebook/indexAction) => html & js
+            |
+            V
+        persist/load_user_data => {batch_token:x, server_time:x, status:OK, payload:{}}
+            |                     120k
+            |
+            V
+        loaddata/get_friend
+            |
+            V
+        persist/batch
