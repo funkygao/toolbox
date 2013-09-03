@@ -43,6 +43,8 @@ OpenSource
 
 - munin/nagios
 
+- chef
+
 - mongodb
 
   mdadm raid0
