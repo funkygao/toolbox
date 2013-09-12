@@ -1,2 +1,3 @@
 #!/bin/bash
-./nginxstats.py royal-us.socialgamenet.com
+#./nginxstats.py royal-us.socialgamenet.com
+python run.py royal-us.socialgamenet.com
