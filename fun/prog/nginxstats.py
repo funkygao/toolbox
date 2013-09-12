@@ -15,6 +15,7 @@ COLOR_YELLOW = "\033[33;33m"
 COLOR_RESET = "\033[m"
 
 RPS_BAR_STEP = 50
+RPS_BAR_MAX_LEN = 50
 RPS_ALERT, RPS_WARN = 800/RPS_BAR_STEP, 600/RPS_BAR_STEP
 
 NGINX_STATUS = '/nginx_status'
@@ -94,6 +95,9 @@ def print_head():
     print '-------- -------- ---------- ----- ----- ----- ----------', '-' * 20
 
 def rps_bar(rps):
+    if rps > RPS_BAR_MAX_LEN:
+        rps = RPS_BAR_MAX_LEN
+
     color = COLOR_GREEN
     if rps >= RPS_ALERT:
         color = COLOR_RED
