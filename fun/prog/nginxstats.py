@@ -5,6 +5,7 @@ import sys
 import time
 import datetime
 import urllib2 as urllib
+import socket
 
 TIME_SLEEP = 2
 
@@ -15,6 +16,8 @@ COLOR_RESET = "\033[m"
 
 RPS_BAR_STEP = 50
 RPS_ALERT, RPS_WARN = 800/RPS_BAR_STEP, 600/RPS_BAR_STEP
+
+NGINX_STATUS = '/nginx_status'
 
 def get_data(url):
     data = urllib.urlopen(url)
@@ -42,8 +45,18 @@ def get_data(url):
 
     return result
 
+def get_ips_of_domain(domain):
+    ''' -> [ip1, ip2]'''
+    r = socket.gethostbyname_ex(domain)
+    return r[2]
+
 def main():
-    url = sys.argv[1]
+    domain = sys.argv[1]
+    ips = get_ips_of_domain(domain)
+    run(ips[0])
+
+def run(ip):
+    url = 'http://' + ip + NGINX_STATUS
     print '=' * 5, url, '=' * 5, '\n'
     delta, prev, total, count = 0, None, None, 0
     try:

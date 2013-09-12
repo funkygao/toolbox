@@ -1,2 +1,2 @@
 #!/bin/bash
-./nginxstats.py http://royal-us.socialgamenet.com/nginx_status
+./nginxstats.py royal-us.socialgamenet.com
