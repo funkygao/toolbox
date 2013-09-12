@@ -3,7 +3,8 @@
 import re
 import sys
 import time
-import urllib
+import datetime
+import urllib2 as urllib
 
 TIME_SLEEP = 2
 
@@ -29,14 +30,14 @@ def get_data(url):
     result['writing'] = int(match3.group(2))
     result['waiting'] = int(match3.group(3))
 
+    result['now'] = time.time()
+
     return result
 
 def main():
     url = sys.argv[1]
-    prev = None
-    next = time.time() + TIME_SLEEP
-    total = None
-    count = 0
+    print '=' * 5, url, '=' * 5, '\n'
+    delta, prev, total, count = 0, None, None, 0
     try:
         while True:
             data = get_data(url)
@@ -51,8 +52,7 @@ def main():
             else:
                 print_head()
             prev = data
-            time.sleep(next - time.time())
-            next += TIME_SLEEP
+            time.sleep(TIME_SLEEP)
     except KeyboardInterrupt:
         if total:
             print_foot(total, count)
@@ -60,26 +60,29 @@ def main():
 
 def print_foot(total, count):
     total = [v / count for v in total]
-    print '-------- ---------- ---------- ----- ----- -----'
-    print '%8d %10.2f %10.2f %5d %5d %5d' % tuple(total)
+    print '-------- -------- ---------- ---------- ----- ----- -----'
+    print '%8s' % now_str(), '%8d %10.2f %10.2f %5d %5d %5d' % tuple(total)
 
+def now_str():
+    now = datetime.datetime.now()
+    return '%02d:%02d:%02d' % (now.hour, now.minute, now.second)
 
 def print_head():
-    print '%-8s %-10s %-10s %-5s %-5s %-5s' % (
-        'Conn', 'Conn/s', 'Request/s', 'Read', 'Write', 'Wait')
-    print '-------- ---------- ---------- ----- ----- -----'
+    print '%-8s %-8s %-10s %-10s %-5s %-5s %-5s' % (
+        'Now', 'Conn', 'Conn/s', 'Request/s', 'Read', 'Write', 'Wait')
+    print '-------- -------- ---------- ---------- ----- ----- -----'
 
 
 def print_stat(prev, data):
     result = (
         data['connections'],
-        float(data['accepted'] - prev['accepted']) / TIME_SLEEP,
-        float(data['requests'] - prev['requests']) / TIME_SLEEP,
+        float(data['accepted'] - prev['accepted']) / (data['now'] - prev['now']),
+        float(data['requests'] - prev['requests']) / (data['now'] - prev['now']),
         data['reading'],
         data['writing'],
         data['waiting'])
 
-    print '%8d %10.2f %10.2f %5d %5d %5d' % result
+    print '%8s' % now_str(), '%8d %10.2f %10.2f %5d %5d %5d' % result
     return result
         
 
