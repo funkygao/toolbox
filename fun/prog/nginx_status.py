@@ -17,6 +17,7 @@ COLOR_BLUE = "\033[33;34m"
 COLOR_LIGHT_CYAN = "\033[36;36m"
 COLOR_RESET = "\033[m"
 
+RPS_BAR_SYMBOL = 'o'
 RPS_BAR_STEP = 60
 RPS_BAR_MAX_LEN = 30
 RPS_ALERT, RPS_WARN = 800/RPS_BAR_STEP, 600/RPS_BAR_STEP
@@ -77,7 +78,7 @@ def rps_bar(rps):
         color = COLOR_RED
     elif rps >= RPS_WARN:
         color = COLOR_YELLOW
-    return color + '#' * rps + COLOR_RESET
+    return color + RPS_BAR_SYMBOL * rps + COLOR_RESET
 
 def print_stat(ipcolor, ip, prev, data):
     result = (
