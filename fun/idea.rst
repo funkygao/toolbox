@@ -21,4 +21,8 @@ Ideas
 
   紧急关闭一些特性，类似于graceful degrade
 
+- php google analytics integration
+
+  http://code.google.com/p/php-ga/
+
 
