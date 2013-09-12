@@ -8,6 +8,14 @@ import urllib2 as urllib
 
 TIME_SLEEP = 2
 
+COLOR_RED = "\033[33;31m"
+COLOR_GREEN = "\033[33;32m"
+COLOR_YELLOW = "\033[33;33m"
+COLOR_RESET = "\033[m"
+
+RPS_BAR_STEP = 50
+RPS_ALERT, RPS_WARN = 800/RPS_BAR_STEP, 600/RPS_BAR_STEP
+
 def get_data(url):
     data = urllib.urlopen(url)
     data = data.read()
@@ -68,21 +76,29 @@ def now_str():
     return '%02d:%02d:%02d' % (now.hour, now.minute, now.second)
 
 def print_head():
-    print '%-8s %-8s %-10s %-10s %-5s %-5s %-5s' % (
-        'Now', 'Conn', 'Conn/s', 'Request/s', 'Read', 'Write', 'Wait')
-    print '-------- -------- ---------- ---------- ----- ----- -----'
+    print '%-8s %-8s %-10s %-5s %-5s %-5s %-10s %-20s' % (
+        'Now', 'Conn', 'Conn/s', 'Read', 'Write', 'Wait', 'RPS', 'RPSbar')
+    print '-------- -------- ---------- ----- ----- ----- ----------', '-' * 20
 
+def rps_bar(rps):
+    color = COLOR_GREEN
+    if rps >= RPS_ALERT:
+        color = COLOR_RED
+    elif rps >= RPS_WARN:
+        color = COLOR_YELLOW
+    return color + '#' * rps + COLOR_RESET
 
 def print_stat(prev, data):
     result = (
         data['connections'],
         float(data['accepted'] - prev['accepted']) / (data['now'] - prev['now']),
-        float(data['requests'] - prev['requests']) / (data['now'] - prev['now']),
         data['reading'],
         data['writing'],
-        data['waiting'])
+        data['waiting'],
+        float(data['requests'] - prev['requests']) / (data['now'] - prev['now']),
+        )
 
-    print '%8s' % now_str(), '%8d %10.2f %10.2f %5d %5d %5d' % result
+    print '%8s' % now_str(), '%8d %10.2f %5d %5d %5d %10.2f' % result, rps_bar(int(result[5]/50))
     return result
         
 
