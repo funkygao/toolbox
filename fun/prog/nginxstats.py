@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#encoding=utf-8
 
 import re
 import sys
@@ -80,19 +81,9 @@ def run(ip):
             print_foot(total, count)
 
 
-def print_foot(total, count):
-    total = [v / count for v in total]
-    print '-------- -------- ---------- ---------- ----- ----- -----'
-    print '%8s' % now_str(), '%8d %10.2f %10.2f %5d %5d %5d' % tuple(total)
-
 def now_str():
     now = datetime.datetime.now()
     return '%02d:%02d:%02d' % (now.hour, now.minute, now.second)
-
-def print_head():
-    print '%-8s %-8s %-10s %-5s %-5s %-5s %-10s %-20s' % (
-        'Now', 'Conn', 'Conn/s', 'Read', 'Write', 'Wait', 'RPS', 'RPSbar')
-    print '-------- -------- ---------- ----- ----- ----- ----------', '-' * 20
 
 def rps_bar(rps):
     if rps > RPS_BAR_MAX_LEN:
@@ -105,6 +96,16 @@ def rps_bar(rps):
         color = COLOR_YELLOW
     return color + '#' * rps + COLOR_RESET
 
+def print_head():
+    print '%-8s %-8s %-10s %-5s %-5s %-5s %-10s %-20s' % (
+        'Now', 'Conn', 'Conn/s', 'Read', 'Write', 'Wait', 'RPS', 'RPSbar')
+    print '-------- -------- ---------- ----- ----- ----- ----------', '-' * 20
+
+def print_foot(total, count):
+    total = [v / count for v in total]
+    print '-------- -------- ---------- ----- ----- ----- ----------', '-' * 18 
+    print '%8s' % now_str(), '%8d %10.2f %5d %5d %5d %10.2f' % tuple(total), rps_bar(int(total[5]/RPS_BAR_STEP))
+
 def print_stat(prev, data):
     result = (
         data['connections'],
@@ -115,7 +116,7 @@ def print_stat(prev, data):
         float(data['requests'] - prev['requests']) / (data['now'] - prev['now']),
         )
 
-    print '%8s' % now_str(), '%8d %10.2f %5d %5d %5d %10.2f' % result, rps_bar(int(result[5]/50))
+    print '%8s' % now_str(), '%8d %10.2f %5d %5d %5d %10.2f' % result, rps_bar(int(result[5]/RPS_BAR_STEP))
     return result
         
 
