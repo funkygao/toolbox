@@ -11,7 +11,8 @@ SELECT_TIMEOUT = 1
 BUFSIZE = 1024
 
 def print_head(domain, ips):
-    print '=' * 5, domain, '=' * 5, '\n'
+    print '=' * 5, domain, '=' * 5
+    print ips, "\n"
     print '%-16s %-8s %-8s %-10s %-5s %-5s %-5s %-10s %-20s' % (
             'Nginx', 'Now', 'Conn', 'Conn/s', 'Read', 'Write', 'Wait', 'RPS', 'RPSbar')
     print '-'*16, '-------- -------- ---------- ----- ----- ----- ----------', '-' * 20
@@ -32,7 +33,7 @@ def main():
     ips = get_ips_of_domain(domain)
     print_head(domain, ips)
 
-    nginx_status_procs = [Popen(['python', 'nginx_status.py', ip], stdout = PIPE, bufsize = BUFSIZE) for ip in ips]
+    nginx_status_procs = [Popen(['python', 'nginx_status.py', ip, str(ipcolor)], stdout = PIPE, bufsize = BUFSIZE) for ipcolor, ip in enumerate(ips)]
     try:
         while nginx_status_procs:
             for proc in nginx_status_procs:

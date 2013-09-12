@@ -12,13 +12,18 @@ TIME_SLEEP = 2
 COLOR_RED = "\033[33;31m"
 COLOR_GREEN = "\033[33;32m"
 COLOR_YELLOW = "\033[33;33m"
+COLOR_PURPLE = "\033[33;35m"
+COLOR_BLUE = "\033[33;34m"
+COLOR_LIGHT_CYAN = "\033[36;36m"
 COLOR_RESET = "\033[m"
 
 RPS_BAR_STEP = 60
-RPS_BAR_MAX_LEN = 40
+RPS_BAR_MAX_LEN = 30
 RPS_ALERT, RPS_WARN = 800/RPS_BAR_STEP, 600/RPS_BAR_STEP
 
 NGINX_STATUS = '/nginx_status'
+
+COLORS = [COLOR_BLUE, COLOR_PURPLE, COLOR_LIGHT_CYAN, COLOR_GREEN]
 
 def get_data(url):
     data = urllib.urlopen(url)
@@ -46,14 +51,14 @@ def get_data(url):
 
     return result
 
-def run(ip):
+def run(ip, ipcolor):
     url = 'http://' + ip + NGINX_STATUS
     prev = None
     try:
         while True:
             data = get_data(url)
             if prev:
-                result = print_stat(ip, prev, data)
+                result = print_stat(ipcolor, ip, prev, data)
             prev = data
             time.sleep(TIME_SLEEP)
     except KeyboardInterrupt:
@@ -74,7 +79,7 @@ def rps_bar(rps):
         color = COLOR_YELLOW
     return color + '#' * rps + COLOR_RESET
 
-def print_stat(ip, prev, data):
+def print_stat(ipcolor, ip, prev, data):
     result = (
         data['connections'],
         float(data['accepted'] - prev['accepted']) / (data['now'] - prev['now']),
@@ -84,13 +89,19 @@ def print_stat(ip, prev, data):
         float(data['requests'] - prev['requests']) / (data['now'] - prev['now']),
         )
 
-    print '%16s %8s' % (ip, now_str()), '%8d %10.2f %5d %5d %5d %10.2f' % result, rps_bar(int(result[5]/RPS_BAR_STEP))
+    color_format = COLORS[ipcolor] + "%16s" + COLOR_RESET
+    print color_format % ip,
+    print '%8s' % now_str(), '%8d %10.2f %5d %5d %5d %10.2f' % result, rps_bar(int(result[5]/RPS_BAR_STEP))
     sys.stdout.flush() # very important for popen to read my output!
     return result
         
 def main():
+    if len(sys.argv) < 3:
+        ipcolor = 0
+    else:
+        ipcolor = int(sys.argv[2])
     ip = sys.argv[1]
-    run(ip)
+    run(ip, ipcolor)
 
 if __name__ == '__main__':
     main()
