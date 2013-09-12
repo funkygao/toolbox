@@ -51,6 +51,9 @@ OpenSource
 
 - memcache
 
+  memcache.hash_strategy="standard"
+  memcache.hash_function="crc32"
+
 - haproxy
 
 - nginx/php-fpm
@@ -59,14 +62,20 @@ OpenSource
 
 - postfix
 
+- go
+
+  mq consumer for pushing msg
+
+- beanstalk
+
+  mq engine
+
 QA
 ==
 
 - why both munin and nagios
 
 - multiple role for a single aws instance?
-
-- fastcgi_finish_request()
 
 - royal-flashlog.socialgamenet.com/loading.php?check=1930761&uid=1&step=1.x
 
@@ -77,7 +86,9 @@ QA
     https://banner-api.socialgamenet.com/loader.php?site=playroyalstory_it&wrap=royal-banner1
     https://banner-api.socialgamenet.com/loader.php?site=playroyalstory1_it&wrap=royal-inbox-hide-cont
 
-session  ttl=3 days, if age>1, refresh timestamp
+::
+
+    session  ttl=3 days, if age>1, refresh timestamp
     $_COOKIE['rs_session'] = f06d631388e78bcdfd83241f095bef7a0df6399c,1,1377824579
                              ======================================== = ==============
                                                                       uid request time
@@ -99,6 +110,8 @@ Dataflow
 
     d3mxhpy50zysgx.cloudfront.net/v3/game_config/it_US/171.amf
     gzip 1.8M to 490k
+
+    https://royal-us.socialgamenet.com/persist/load_game_config/?key=13776735595050.80078125
 
     https://royal-us.socialgamenet.com/persist/load_user_data/?key=13776735595050.80078125
     Big json of user all data
@@ -247,6 +260,16 @@ Publishment
                             - royal-us.socialgamenet.com
 
 
+
+        git co develop
+        git pull [origin develop]
+        git co -b f_xx develop
+        do coding...committing...
+        git co develop
+        git merge --no-ff f_xx
+        git push origin develop
+        http://royal-qa.socialgamenet.com/qa/index.html
+
 Schema
 ======
 
@@ -268,7 +291,6 @@ Memcache
 key                             value
 =============================== ==================
 check_flash_time_{uid}          load_userdata time
-
 =============================== ==================
 
 
@@ -281,7 +303,33 @@ check_flash_time_{uid}          load_userdata time
             |                     120k
             |
             V
+        facebook/requests
+            |
+            V
         loaddata/get_friend
             |
             V
         persist/batch
+
+
+git
+===
+
+::
+
+                                    - cd /mnt/htdocs/qa
+                                   |- assert(http://qa/up.sh was done) && assert(current branch is 'develop')
+                                   |- git ca -m 'v'.svnNUM
+        {qa}/mnt/htdocs/th.sh ===> |- git push
+                 |                 |- git co royal_th;git pull;git merge --no-ff develop;git push
+                 |                  - git co develop
+                 |
+        git co master; git merge --no-ff royal_th
+                 |
+                 |
+                 |                    - cd /mnt/htdocs/qa
+        {qa}/mnt/htdocs/publish.sh =>|- git co royal_us;git mg master;git push
+                                     |- git co royal_fr;git mg master;git push
+                                     |- ...
+                                      - git co develop
+
