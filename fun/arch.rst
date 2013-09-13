@@ -317,6 +317,7 @@ git
 
 ::
 
+
                                     - cd /mnt/htdocs/qa
                                    |- assert(http://qa/up.sh was done) && assert(current branch is 'develop')
                                    |- git ca -m 'v'.svnNUM
@@ -332,4 +333,76 @@ git
                                      |- git co royal_fr;git mg master;git push
                                      |- ...
                                       - git co develop
+
+
+index.php
+=========
+
+::
+
+
+        {
+            "accessToken": "CAABuBHFlEZBoBAP0U9Mqi7oNGkZAPVjryaQ3D5ZA0ujSZB5UTqZAZCC23elmfA8siieDjPe5iyxrcZAgskTk1d0tuuRZB2o7357Gyt5Likda3uQ7H9GV9p3xu0iCZBW5W75TsTC38KUAY0O52QwwZA9fCPSnVIfJrEIzBoVa71UiFhpT4lFmFIzoraQbbZBGaMBlD0ZD",
+            "admin": 0,
+            "amf": 1,
+            "api_url": "https://royal-us.socialgamenet.com/",
+            "app_id": "120965361374186",
+            "app_name": "playroyalstory",
+            "app_url": "http://apps.facebook.com/playroyalstory/",
+            "bigData": "fb_en",
+            "channelUrl": "https://royal-us.socialgamenet.com/html/channel.html",
+            "email": "funky.gao@gmail.com",
+            "flashVersion": 7741,
+            "flushMain": 1,
+            "guid": 10660866,
+            "hashed_id": "sntpi-YUwi79HMrue2DgkkbymTxLyBlGQcMZXOqcgUGWJVA_Y",
+            "img_url": "https://d3mxhpy50zysgx.cloudfront.net/v3/",
+            "img_url2": "https://royal-us-asset.s3.amazonaws.com/v3/",
+            "isHttps": 1,
+            "isMonsterDebug": 0,
+            "json_url": "https://d3mxhpy50zysgx.cloudfront.net/v3/game_config/en_US/196.amf",
+            "language": "en",
+            "loading_img": "https://d3mxhpy50zysgx.cloudfront.net/v3/img/loading/Loading_BacktoSchool.jpg",
+            "loading_path": "https://d3mxhpy50zysgx.cloudfront.net/v3/7641/loading/loading_en.swf",
+            "locale": "us",
+            "log": 1,
+            "log_url": "https://royal-flashlog.socialgamenet.com/l/us/",
+            "main_path": "https://d3mxhpy50zysgx.cloudfront.net/v3/7741/main/en/Main.swf",
+            "name": "\u9e4f",
+            "payMod": 1,
+            "payment": "true",
+            "payment_id": "55",
+            "pic_square": "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash3/623555_100003391571259_1712659798_q.jpg",
+            "pv": 1,
+            "ref": "self",
+            "res_json": "https://d3mxhpy50zysgx.cloudfront.net/v3/7690/main/en/loading.json",
+            "royalStoryTest": 0,
+            "secret": "070c8dcaf2185d2db0bac0afc8282228",
+            "session_key": 1378699827,
+            "showMask": 0,
+            "startNow": 0,
+            "statistic": "%7B%22loading%22%3A%221%22%7D",
+            "timestamp": 1378899847,
+            "tutorialStep": 0,
+            "user_id": "100003391571259",
+            "ver_game_config": 196,
+            "versions_url": "https://d3mxhpy50zysgx.cloudfront.net/v3/7741/ver_en.amf"
+        }
+
+
+
+
+facebot
+=======
+
+::
+
+        get http://www.facebook.com
+            |
+            | got signed_request and playroyalstory app info
+            |
+        post royal-us.socialgamenet.com
+            |
+            | got into flashvars.txt
+            |
 
