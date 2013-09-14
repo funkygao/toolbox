@@ -26,3 +26,44 @@ Ideas
   http://code.google.com/p/php-ga/
 
 
+ConfigFiles
+===========
+
+requirement
+-----------
+
+- do we need {if/loop/var}?
+
+- need @extends
+
+existing
+--------
+
+- YAML
+
+- JSON
+
+- ini
+
+- xml
+
+solutions
+---------
+
+- use sqlite3 as storage
+
+  faster and use less mem
+
+  gui for sqlite3
+
+- vcl
+
+  varnish configuration language
+
+- puppet configuration language
+
+  deprecate pupput ruby DSL
+
+- lua
+
+- https://code.google.com/p/coil/
