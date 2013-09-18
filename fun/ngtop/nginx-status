@@ -1,3 +1,10 @@
 #!/bin/bash
-#./nginxstats.py royal-us.socialgamenet.com
-python director.py royal-us.socialgamenet.com
+#============================
+# nginx top
+#============================
+domain='royal-us.socialgamenet.com'
+if [[ ($# > 0) ]]; then
+domain=$1
+fi
+
+python director.py $domain

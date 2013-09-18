@@ -1,5 +1,5 @@
 [user]
-	name = funky gao
+	name = funkygao
 	email = funky.gao@gmail.com
 [core]
 	quotepath = false
@@ -22,7 +22,9 @@
     wc = whatchanged --oneline
     ss = stash list
     st = status
-	s = status -sb
+    s = status -sb
+    conflict = status --short | grep "^U[UAD]"
+    clear = clean -df
     br = branch
     rb = branch -r
     b = branch -a -v
@@ -36,8 +38,8 @@
     d = shortlog -s -n --since='2 day ago' --no-merges
     lost = reflog
     prepush = log --graph --stat origin/master..
-    h = !git log --pretty=format:\"%h %Cred%an%Creset@%ar - %Cgreen%s%Creset\"
-    his = !git log --numstat --pretty=format:\"%Cred%an%Creset@%ar %Cgreen%s%Creset\" HEAD
+    h = !git log --graph --pretty=format:\"%h %Cred%an%Creset@%ar - %Cgreen%s%Creset\"
+    his = !git log --graph --numstat --pretty=format:\"%Cred%an%Creset@%ar %Cgreen%s%Creset\" HEAD
     last = log -1 -p HEAD
     hd = log -2 HEAD
     lg = log --date=local
@@ -49,7 +51,6 @@
     bl = blame --show-stats
     bll = blame -L
     bls = blame --show-stats -s
-    kx = svn rebase
     rem = remote -v
     lsr = ls-remote
     unstage = reset HEAD --
