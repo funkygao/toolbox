@@ -8,3 +8,7 @@ funkload.xml
 _build/
 target/
 *.iml
+cookie*
+var/
+tmp/
+chart/

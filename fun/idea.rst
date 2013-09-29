@@ -25,6 +25,20 @@ Ideas
 
   http://code.google.com/p/php-ga/
 
+- how to add more memcached when dau is growing rapidly
+
+
+
+web game
+
+::
+
+
+        web server
+        task server
+        db server(cache server)
+    
+
 
 ConfigFiles
 ===========

@@ -9,6 +9,57 @@ Fun+ Infrastructure
 .. contents:: Table Of Contents
 .. section-numbering::
 
+BigData
+=======
+
+key
+---
+
+::
+
+    :rstory.source.key time() int_value
+            ------
+            fb_en
+
+QA
+==
+
+th 2 memcached, get hit rate: 90/65
+
+
+memcache set maybe fail
+
+tcpdump -n 'tcp dst port 11211' -vvxXs 1500
+tcpdump -n 'tcp port 11211' -vvxXs 1500
+tcpdump -s 65535 -x -n -q -tttt port 11211
+
+
+net.ipv4.tcp_fin_timeout = 60
+net.ipv4.ip_local_port_range = 32768    61000
+net.ipv4.tcp_tw_reuse = 0
+net.ipv4.tcp_tw_recycle = 0
+
+::
+
+        mmc_prepare_key_ex  without warning
+        mmc_get_pool        without warning
+        php_var_serialize   Warning: Failed to serialize value
+        mmc_pool_store      
+            mmc_compress
+            mmc_pool_find
+            mmc_server_store
+
+OPS
+===
+
+- server alarm
+
+- mcenter.
+
+- munin web only 1 host
+
+- how git push to each web server
+
 Gaming
 ======
 
@@ -406,3 +457,36 @@ facebot
             | got into flashvars.txt
             |
 
+
+
+
+
+uid
+===
+
+for each request
+
+::
+
+
+        idmap::snsClassToUid
+            |
+        findByHashidOrSnsid
+            |
+            | not found
+            |
+        idSquenceModel::getNextValue('idmap')
+            |
+        update idmap for this uid
+
+
+
+load_user_data
+
+::
+
+        useraccount::getUserAccount
+            |
+            | not exist
+            |
+        create all tables for this uid
