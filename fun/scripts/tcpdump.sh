@@ -12,5 +12,7 @@ tcpdump -vvvAs 1500 -n 'dst port 27017 and tcp[13] & 8 = 8' | grep --color royal
 cat /mnt/logs/mongo.log | cut -d'.' -f2 | sort | uniq -c | sort -nr 
 
 # find dup tcp handshake sync
+# the '-S' above which keeps sequence numbers intact
+# this will be helpful to troubleshoot issues if some retransmits are found
 #========================
 tcpdump -Svvni eth0 'tcp[13]&7!=0 and (dst port 11211 or dst port 11212 or dst port 11213)'
