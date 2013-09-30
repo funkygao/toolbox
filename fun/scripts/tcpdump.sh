@@ -14,5 +14,6 @@ cat /mnt/logs/mongo.log | cut -d'.' -f2 | sort | uniq -c | sort -nr
 # find dup tcp handshake sync
 # the '-S' above which keeps sequence numbers intact
 # this will be helpful to troubleshoot issues if some retransmits are found
+# will write the logs to a pcap file conn.pcap, which can be analyzed in wireshark
 #========================
-tcpdump -Svvni eth0 'tcp[13]&7!=0 and (dst port 11211 or dst port 11212 or dst port 11213)'
+tcpdump -w conn.pcap -Svvni eth0 'tcp[13]&7!=0 and (dst port 11211 or dst port 11212 or dst port 11213)'
