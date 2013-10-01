@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 #encoding=utf-8
+''' TODO
+plt.bar(bottom=xxx) to stack bar http://matplotlib.org/examples/pylab_examples/table_demo.html
+'''
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,25 +10,11 @@ import pylab as pl
 import json
 import sys
 import locale as syslocale
+from plot import *
 
 FIG_TITLE_FONT_SIZE = 20
 
 show_result = False
-
-def call_php_fetch():
-    from subprocess import call
-    call(['php', 'fetch.php'])
-
-def commas_thousand(i):
-    ''' commas_thousand(12453) -> '12,453'
-    '''
-    return syslocale.format("%d", i, grouping=True)
-
-def load_days(category, locale='us'):
-    '''load the x axis series'''
-    with open('var/' + locale + '_' + category + 'Days') as f:
-        days = json.loads(f.readlines()[0])
-    return ['-'.join(d.split('-')[1:]) for d in days]
 
 def draw_arpu(locales):
     # prepare data
@@ -274,10 +263,11 @@ def draw_retention_vs_arpu(locales):
     if show_result:
         pl.show()
 
-def save_figure(fig, name):
-    filename = 'chart/' + name + '.jpg'
-    fig.gca().hold(False)
-    fig.savefig(filename, dpi=150)
+def draw_stacked_revenue(locales):
+    draw_stacked_bars(locales, 'paymentDatas', 'Daily Total Revenue', 'stacked_revenue', grid = True, days = 'dau')
+
+def draw_stacked_dau(locales):
+    draw_stacked_bars(locales, 'dauDatas', 'Daily Total DAU', 'stacked_dau', grid = True, days = 'dau')
 
 def setup_fig(ax, title, xticks1, xticks2, xlabel, ylabel):
     plt.sca(ax)
@@ -286,16 +276,13 @@ def setup_fig(ax, title, xticks1, xticks2, xlabel, ylabel):
     pl.xticks(xticks1, xticks2)
     pl.xlabel(xlabel)
     pl.ylabel(ylabel)
+    y_format = tkr.FuncFormatter(commas_func)
+    ax.yaxis.set_major_formatter(y_format)
 
-def get_locales(file='var/locales'):
-    with open(file) as f:
-        return json.loads(f.readlines()[0])
-    return None
-
-def init():
-    from pylab import rcParams
-    rcParams['figure.figsize'] = 18, 11
-    syslocale.setlocale(syslocale.LC_ALL, 'en_US')
+def write_finish_time(target):
+    from time import ctime
+    with open(target, 'w') as f:
+        f.write(ctime())
 
 def main():
     init()
@@ -317,6 +304,9 @@ def main():
     draw_retention(locales)
     draw_retention_vs_arpu(locales)
     draw_dau_vs_revenue(locales)
+    draw_stacked_revenue(locales)
+    draw_stacked_dau(locales)
+    write_finish_time('var/done.txt')
 
 if __name__ == '__main__':
     main()
