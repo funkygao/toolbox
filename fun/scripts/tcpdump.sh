@@ -17,3 +17,6 @@ cat /mnt/logs/mongo.log | cut -d'.' -f2 | sort | uniq -c | sort -nr
 # will write the logs to a pcap file conn.pcap, which can be analyzed in wireshark
 #========================
 tcpdump -w conn.pcap -Svvni eth0 'tcp[13]&7!=0 and (dst port 11211 or dst port 11212 or dst port 11213)'
+
+# 只查看数据长度大于100的包
+tcpdump -vvvAs 1500 -n 'port 27017 and tcp[13] & 8 = 8 and greater 100'
