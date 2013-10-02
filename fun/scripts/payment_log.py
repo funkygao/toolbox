@@ -22,7 +22,7 @@ for line in sys.stdin:
 def print_ordered_result(title, d):
     print '*' * 10, title, '*'*10
     r = sorted( ((v, k) for k, v in d.iteritems()), reverse=True)
-    for k, v in r.iteritems():
+    for k, v in r:
         print v, k
     print
 
