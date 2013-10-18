@@ -24,8 +24,16 @@ if [ "$#" -eq 1 ];then
 	keyword="$1"
 fi
 
-hostlist=$(/root/gp/cluster | grep $keyword | cut -d',' -f3|awk '$1 !~ /^$/ {host = $1; if(FNR == 1){list[length(list)+1] = host}else{list[length(list)+1] = ","host}}END{ for(k=1;k<=length(list);k++){printf list[k]}}')
+hostlist=$(/root/bin/cluster | grep $keyword | cut -d',' -f3|awk '$1 !~ /^$/ {host = $1; if(FNR == 1){list[length(list)+1] = host}else{list[length(list)+1] = ","host}}END{ for(k=1;k<=length(list);k++){printf list[k]}}')
 
-echo $hostlist
-echo
+RED="\033[33;31m"
+GREEN="\033[33;32m"
+YELLOW="\033[33;33m"
+BLUE="\033[33;34m"
+PURPLE="\033[33;35m"
+RESET="\033[m"
+
+echo -e "${GREEN}==============================================================================================${RESET}"
+echo -e "${RED}$hostlist${RESET}"
+echo -e "${GREEN}==============================================================================================${RESET}"
 pdsh -b -R ssh -l root -u 10 -w $hostlist $cmd
