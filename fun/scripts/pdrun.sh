@@ -11,5 +11,6 @@ if [ "$#" -eq 0 ];then
 fi
 
 echo $hostlist
-pdsh -b -R ssh -l root -u 10 -w $hosts $3
+echo
+pdsh -b -R ssh -l root -u 10 -w $hostlist $3
 
