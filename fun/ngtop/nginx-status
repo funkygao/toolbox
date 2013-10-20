@@ -8,5 +8,4 @@ if [[ ($# > 0) ]]; then
 fi
 
 domain=royal-$area.socialgamenet.com
-echo $domain
 python director.py $domain
