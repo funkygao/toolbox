@@ -1,12 +1,20 @@
 #!/usr/bin/env python
 #encoding=utf-8
+'''man page for GO
+
+godoc在查询帮助时，必须先知道所在的pkg才行
+通过本工具，可以不关心pkg找go doc
+
+例如，查找read在哪些包里有定义:
+$ gman read
+'''
 
 import re
 import sys
 import os
 
 r = re.compile(r'pkg (?P<pkg>\S+), (?P<type>\S+) (?P<tag>.+).*')
-apifile = '/usr/local/go/api/go1.txt'
+apifile = '/opt/local/go/api/go1.txt'
 
 def lookup(kws):
     result = set()
