@@ -2,9 +2,11 @@
 #============================
 # nginx top
 #============================
-domain='royal-us.socialgamenet.com'
+area=us
 if [[ ($# > 0) ]]; then
-domain=$1
+    area=$1
 fi
 
+domain=royal-$area.socialgamenet.com
+echo $domain
 python director.py $domain
