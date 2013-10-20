@@ -9,12 +9,38 @@ MMO game server
 .. contents:: Table Of Contents
 .. section-numbering::
 
+MMO vs HTTP
+===========
 
-SFS
-============
+- long conn vs short conn
 
-Terracotta provides clustering services at the JVM level, allowing to distribute a single Java application over multiple virtual machines as if they were one.
+- area based partition vs load balanced cluster
 
-It works at byte-code level, providing distributed heap memory across multiple JVMs and allowing developers to use the standard Java semantics for synchronizing access to shared objects.
+  地图的管理方式决定了我们的服务器结构
 
-Terracotta provides a clustered heap.
+  同场景的玩家跑在一个进程内， 以达到最少的跨进程调用
+
+- stateful vs stateless
+
+- request/broadcast vs request/response
+
+GameServer
+==========
+
+游戏服务器要处理的基本逻辑有
+
+- move
+
+- chat
+
+- mission
+
+- 技能
+
+- 物品
+
+- 生物
+
+另外还有地图管理与消息广播来对其他高级功能做支撑，如纵队、好友、公会、战场和副本等
+
+
