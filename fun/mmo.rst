@@ -43,4 +43,17 @@ GameServer
 
 另外还有地图管理与消息广播来对其他高级功能做支撑，如纵队、好友、公会、战场和副本等
 
+Move
+----
 
+Smooth effect
+#############
+
+- client prediction
+
+- latency compensate
+
+Notify
+######
+
+AOI

@@ -26,8 +26,8 @@ func main() {
     results := vegeta.Attack(targets, *rps, time.Second * time.Duration(*duration))
     metrics := vegeta.NewMetrics(results)
 
-    fmt.Printf("%8s: %s\n", "mean", metrics.Latencies.Mean)
-    fmt.Printf("%8s: %s\n", "max", metrics.Latencies.Max)
-    fmt.Printf("%8s: %s\n", "95%", metrics.Latencies.P95)
-    fmt.Printf("%8s: %s\n", "99%", metrics.Latencies.P99)
+    fmt.Printf("%8s: %15s\n", "mean", metrics.Latencies.Mean)
+    fmt.Printf("%8s: %15s\n", "max", metrics.Latencies.Max)
+    fmt.Printf("%8s: %15s\n", "95%", metrics.Latencies.P95)
+    fmt.Printf("%8s: %15s\n", "99%", metrics.Latencies.P99)
 }
