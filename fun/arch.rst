@@ -9,6 +9,11 @@ Fun+ Infrastructure
 .. contents:: Table Of Contents
 .. section-numbering::
 
+Config
+======
+
+MissionModel::getNexts connect allQuests.php with allTriggers.php
+
 BigData
 =======
 
