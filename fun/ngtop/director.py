@@ -16,7 +16,7 @@ def print_head(domain = '', ips = []):
         print '=' * 5, domain, '=' * 5
     if ips:
         print ips, "\n"
-    print '%-16s %-8s %-8s %-10s %-5s %-5s %-5s %-10s %-20s' % (
+    print '%16s %8s %8s %10s %5s %5s %5s %10s %-20s' % (
             'Nginx', 'Now', 'Conn', 'Conn/s', 'Read', 'Write', 'Wait', 'RPS', 'RPSbar')
     print '-'*16, '-------- -------- ---------- ----- ----- ----- ----------', '-' * 20
     sys.stdout.flush()
