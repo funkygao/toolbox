@@ -73,6 +73,9 @@ import
 
 A Go program or package’s imports are first searched for under the GOPATH path or paths, and then under GOROOT
 
+import fm "fmt" // import alias
+import _ "github.com/mattn/go-sqlite3" // only can init() of the pkg
+import . "fmt" // Println instead of fmt.Println
 
 Builtin func
 ------------
@@ -277,6 +280,8 @@ Remarks
 
 - init() is per file instead of per package
 
+  always single-threaded
+
 - selector
 
   In order to access the fields of a struct, whether the variable is of the 
@@ -351,10 +356,15 @@ map is not thread safe
 ----------------------
 
 
-GoogleAppEngine
-===============
+Good Nameing
+============
 
 ::
 
-    cd /opt/app/google_appengine/demos
-    dev_appserver.py helloworld/
+    for idx, _ := range mySlice {
+
+    if val, present := myMap[key]; present {
+
+    if val, ok := valI.(int); ok {
+
+    if input, open := <- ch; open {
