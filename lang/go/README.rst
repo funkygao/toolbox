@@ -319,6 +319,15 @@ compile
 
     go build -gcflags "-N -l"
 
+init
+----
+
+~/.gdbinit
+
+::
+
+    source /opt/local/go/src/pkg/runtime/runtime-gdb.py
+
 cmd
 ---
 
