@@ -344,6 +344,7 @@ cmd
     disas
 
     whatis variable
+    wh  // window src
 
     b mypack.myfunc
     b 'regexp.(*Regexp).String'
