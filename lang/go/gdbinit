@@ -1,0 +1,15 @@
+#add-auto-load-safe-path $GOROOT/src/pkg/runtime/runtime-gdb.py
+set confirm off
+set verbose off
+set prompt \033[31m(gdb) \033[0m
+
+# These make gdb never pause in its output
+set height 0
+set width 0
+
+# Display instructions in Intel format
+set disassembly-flavor intel
+
+define go
+    source /opt/local/go/src/pkg/runtime/runtime-gdb.py
+end
