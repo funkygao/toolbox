@@ -340,6 +340,7 @@ cmd
 
     info locals
     info args
+    info goroutines
 
     disas
 

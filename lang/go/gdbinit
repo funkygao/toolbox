@@ -1,7 +1,9 @@
 #add-auto-load-safe-path $GOROOT/src/pkg/runtime/runtime-gdb.py
 set confirm off
 set verbose off
-set prompt \033[31m(gdb) \033[0m
+#set prompt \033[31m(gdb) \033[0m
+# set prompt \033[1m(gdb) \033[0m
+set extended-prompt \w - \f\n(gdb) 
 
 # These make gdb never pause in its output
 set height 0
@@ -10,6 +12,17 @@ set width 0
 # Display instructions in Intel format
 set disassembly-flavor intel
 
+set print pretty
+set print symbol-filename on
+set print array on
+set print array-indexes on
+
+# Show the concrete types behind nsIFoo
+set print object on
+
 define go
     source /opt/local/go/src/pkg/runtime/runtime-gdb.py
 end
+
+# ctl+x+a show/hide layout src window
+# http://sourceware.org/gdb/onlinedocs/gdb/TUI-Keys.html#TUI-Keys
