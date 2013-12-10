@@ -2,7 +2,6 @@ package main
 
 import (
     "net/http"
-    "fmt"
     "os"
     "io"
     "runtime"
@@ -29,7 +28,6 @@ func main() {
         go fetchHtml(url)
     }
 
-    var input string
-    fmt.Scanln(&input)
+    select {}
 }
 
