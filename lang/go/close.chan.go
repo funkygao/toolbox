@@ -15,4 +15,17 @@ func main() {
         v, ok := <- ch
         fmt.Println(v, ok)
     }
+
+    demoRange()
+}
+
+func demoRange() {
+    ch := make(chan bool, 2)
+    ch <- true
+    ch <- true
+    close(ch)
+
+    for x := range ch {
+        fmt.Println(x)
+    }
 }
