@@ -15,18 +15,17 @@ func (this *HelloServiceImpl) HelloFunc() (r string, err error) {
 }
 
 func main() {
-	transportFactory := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
-	protocolFactory := thrift.NewTBinaryProtocolFactoryDefault()
-	serverTransport, err := thrift.NewTServerSocket(":8787")
+	handler := &HelloServiceImpl{}
+	processor := hello.NewHelloServiceProcessor(handler)
+
+	listenSocket, err := thrift.NewTServerSocket(":8787")
 	if err != nil {
 		panic(err)
 	}
 
-	handler := &HelloServiceImpl{}
-	processor := hello.NewHelloServiceProcessor(handler)
-
-	server := thrift.NewTSimpleServer4(processor, serverTransport, transportFactory, protocolFactory)
+	server := thrift.NewTSimpleServer2(processor, listenSocket)
 	fmt.Println("Server ready")
+
 	if err := server.Serve(); err != nil {
 		panic(err)
 	}
