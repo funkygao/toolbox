@@ -22,6 +22,7 @@ var (
 	port       string
 	timeout    = time.Second * 10
 	interval   = time.Millisecond * 20
+	getLatency int64
 )
 
 func main() {
@@ -57,7 +58,9 @@ func main() {
 				mc.Timeout = timeout
 				atomic.AddInt64(&concurrent, 1)
 				for {
+					t1 := time.Now()
 					_, err := mc.Get("foo")
+					atomic.AddInt64(&getLatency, time.Since(t1).Nanoseconds())
 					atomic.AddInt64(&totalnum, 1)
 					if err != nil {
 						atomic.AddInt64(&errnum, 1)
@@ -84,9 +87,10 @@ func main() {
 		time.Sleep(time.Microsecond * 70000)
 	}
 
-	fmt.Printf("conn:%5d req:%9d %-6dreq/s err:%4d errRate:%.6f%%\n",
+	fmt.Printf("conn:%5d req:%9d %6dreq/s latency:%dus err:%4d errRate:%.6f%%\n",
 		connnum,
 		totalnum, totalnum/int64(time.Since(t1).Seconds()),
+		getLatency/(1000*totalnum),
 		errnum, 100.*float64(errnum)/float64(totalnum))
 
 }
