@@ -12,6 +12,8 @@ import (
 
 var (
 	concurrent int64
+	errnum     int64
+	totalnum   int64
 	dataSize   int
 	host       string
 	port       string
@@ -48,7 +50,9 @@ func main() {
 				atomic.AddInt64(&concurrent, 1)
 				for {
 					_, err := mc.Get("foo")
+					atomic.AddInt64(&totalnum, 1)
 					if err != nil {
+						atomic.AddInt64(&errnum, 1)
 						fmt.Printf("%s\n", err)
 						break
 					}
@@ -60,10 +64,12 @@ func main() {
 		}()
 	}
 
-	for {
+	for i := 0; i < 260; i++ {
 		atomic.LoadInt64(&concurrent)
 		fmt.Printf("%v\n ", concurrent)
 		time.Sleep(time.Microsecond * 70000)
 	}
+
+	fmt.Println(totalnum, errnum, 100.*float64(errnum)/float64(totalnum))
 
 }
