@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''show trends of LineOfCode by weeks
+'''show trends of LineOfCode by weeks over the past N years
 '''
 
 import sys
