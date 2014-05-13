@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 #==============
 # configurables
 #==============
-REPO_BASEDIR = '../v2/classes/'  # VERY important, what base repo dir are you tracking
+REPO_BASEDIR = '../'  # VERY important, what base repo dir are you tracking
 YEAR_N = 1                       # how long ago are you tracking
 MONTH_IN_YEAR = 52
 GIT_CMD = 'git log --shortstat --since "%d weeks ago" --until "%d week ago" %s| grep "files\? changed"'
@@ -54,10 +54,10 @@ def show_loc_trend(stats):
             continue
         print '%s,%d' % (str(date_of_weeks_ago(weeks_ago)), net_lines)
 
-def run_loc_trend(year):
+def run_loc_trend(years):
     '''The main entry'''
     stats={}
-    for week in reversed(range(0, MONTH_IN_YEAR * year)): # weekly contributions for N years in reverse order
+    for week in reversed(range(0, MONTH_IN_YEAR * years)): # weekly contributions for N years in reverse order
         lines_added, lines_deleted = net_added_lines_of_week(week)
         stats[week] = {}
         stats[week]['add'] = int(lines_added)
@@ -65,7 +65,7 @@ def run_loc_trend(year):
     
     net_lines = 0
     print '='* 102
-    print '=' * 30, 'LineOfCode trend over the past %d year(s)' % year, '=' * 30
+    print '=' * 30, 'LineOfCode trend over the past %d year(s)' % years, '=' * 30
     print '='* 102
     print '%12s %12s %12s %12s %12s' % ('weeksAgo', 'startDate', 'addedLines', 'deletedLines', 'netLines')
     stats_order_by_week_ago = collections.OrderedDict(sorted(stats.items(), reverse=True))
