@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 '''show trends of LineOfCode by weeks
-
-MUST run in the current dir, we only track ../v2/classes/
 '''
 
 import sys
@@ -9,10 +7,12 @@ import subprocess
 import collections
 from datetime import datetime, timedelta
 
+#==============
 # configurables
-YEAR_N = 1
+#==============
+REPO_BASEDIR = '../v2/classes/'  # VERY important, what base repo dir are you tracking
+YEAR_N = 1                       # how long ago are you tracking
 MONTH_IN_YEAR = 52
-REPO_BASEDIR = '../v2/classes/'
 GIT_CMD = 'git log --shortstat --since "%d weeks ago" --until "%d week ago" %s| grep "files\? changed"'
 
 def date_of_weeks_ago(weeks_ago):
