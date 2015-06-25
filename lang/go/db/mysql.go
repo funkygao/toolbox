@@ -18,6 +18,8 @@ func dieIfErr(err error) {
 
 var idgen chan int
 
+const dsn = "dbtest:dbtest@tcp(10.77.145.36:3306)/dbtest?charset=utf8"
+
 func main() {
 	var wg sync.WaitGroup
 	t0 := time.Now()
@@ -52,12 +54,13 @@ func main() {
 	}
 
 	wg.Wait()
-	fmt.Println(time.Since(t0), time.Since(t0).Seconds())
+	elapsed := time.Since(t0)
+	fmt.Printf("elapsed: %s, qps: %d\n", elapsed, Loop*C/int(elapsed.Seconds()))
 
 }
 
 func insert(seq int, loops int) {
-	db, err := sql.Open("mysql", "dbtest:dbtest@tcp(10.77.145.36:3306)/dbtest?charset=utf8")
+	db, err := sql.Open("mysql", dsn)
 	dieIfErr(err)
 	defer db.Close()
 
@@ -70,7 +73,7 @@ func insert(seq int, loops int) {
 }
 
 func update(seq int, loops int) {
-	db, err := sql.Open("mysql", "dbtest:dbtest@tcp(10.77.145.36:3306)/dbtest?charset=utf8")
+	db, err := sql.Open("mysql", dsn)
 	dieIfErr(err)
 	defer db.Close()
 
