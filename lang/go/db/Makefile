@@ -1,7 +1,10 @@
 C=100
 L=1000
 
-all:go insert
+all:insertonly
+
+insertonly:insert clean
+
 
 insert:go
 	@echo "C:$C L:$L"

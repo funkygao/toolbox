@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/funkygao/golib/color"
 	_ "github.com/funkygao/mysql"
 )
 
@@ -91,7 +92,9 @@ func main() {
 
 	wg.Wait()
 	elapsed := time.Since(t0)
-	fmt.Printf("%s elapsed: %s, qps: %d\n", opts.op, elapsed, rows/int(1+elapsed.Seconds()))
+	fmt.Printf("%s elapsed: %s, %s: %d\n", opts.op, elapsed,
+		color.Red("qps"),
+		rows/int(1+elapsed.Seconds()))
 
 }
 
