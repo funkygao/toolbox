@@ -2,13 +2,19 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"fmt"
-	"os"
 	"sync"
 	"time"
 
 	_ "github.com/funkygao/mysql"
 )
+
+var opts struct {
+	concurrent int
+	loop       int
+	op         string
+}
 
 func dieIfErr(err error) {
 	if err != nil {
@@ -22,6 +28,13 @@ const dsn = "dbtest:dbtest@tcp(10.77.145.36:3306)/dbtest?charset=utf8"
 
 //const dsn = "test:test@tcp(10.77.145.28:10066)/TESTDB?charset=utf8"
 
+func init() {
+	flag.IntVar(&opts.concurrent, "c", 100, "concurrent mysql conns")
+	flag.IntVar(&opts.loop, "l", 10000, "each mysql conn exec how many times")
+	flag.StringVar(&opts.op, "op", "insert", "<insert|update|delete>")
+	flag.Parse()
+}
+
 func main() {
 	var wg sync.WaitGroup
 	t0 := time.Now()
@@ -33,31 +46,48 @@ func main() {
 			idgen <- id
 		}
 	}()
-	const C = 200
-	const Loop = 10000
 
-	if os.Args[1] == "insert" {
-		for i := 0; i < C; i++ {
+	switch opts.op {
+	case "insert":
+		for i := 0; i < opts.concurrent; i++ {
 			wg.Add(1)
 			go func(seq int) {
-				insert(seq, Loop)
+				insert(seq, opts.loop)
 				wg.Done()
 			}(i)
 		}
 
-	} else {
-		for i := 0; i < C; i++ {
+	case "update":
+		for i := 0; i < opts.concurrent; i++ {
 			wg.Add(1)
 			go func(seq int) {
-				update(seq, Loop)
+				update(seq, opts.loop)
 				wg.Done()
 			}(i)
 		}
+
+	case "delete":
+		db, err := sql.Open("mysql", dsn)
+		dieIfErr(err)
+		rs, err := db.Exec("DELETE FROM user")
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			if n, err := rs.RowsAffected(); err != nil {
+				fmt.Println(err)
+			} else {
+				fmt.Printf("%d rows deleted\n", n)
+			}
+		}
+		db.Close()
+
+	default:
+		fmt.Println("unknown operation:", opts.op)
 	}
 
 	wg.Wait()
 	elapsed := time.Since(t0)
-	fmt.Printf("elapsed: %s, qps: %d\n", elapsed, Loop*C/int(elapsed.Seconds()))
+	fmt.Printf("%s elapsed: %s, qps: %d\n", opts.op, elapsed, opts.loop*opts.concurrent/int(1+elapsed.Seconds()))
 
 }
 
