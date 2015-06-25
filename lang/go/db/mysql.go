@@ -47,6 +47,7 @@ func main() {
 		}
 	}()
 
+	var rows int
 	switch opts.op {
 	case "insert":
 		for i := 0; i < opts.concurrent; i++ {
@@ -56,6 +57,7 @@ func main() {
 				wg.Done()
 			}(i)
 		}
+		rows = opts.loop * opts.concurrent
 
 	case "update":
 		for i := 0; i < opts.concurrent; i++ {
@@ -65,6 +67,7 @@ func main() {
 				wg.Done()
 			}(i)
 		}
+		rows = opts.loop * opts.concurrent
 
 	case "delete":
 		db, err := sql.Open("mysql", dsn)
@@ -77,6 +80,7 @@ func main() {
 				fmt.Println(err)
 			} else {
 				fmt.Printf("%d rows deleted\n", n)
+				rows = int(n)
 			}
 		}
 		db.Close()
@@ -87,7 +91,7 @@ func main() {
 
 	wg.Wait()
 	elapsed := time.Since(t0)
-	fmt.Printf("%s elapsed: %s, qps: %d\n", opts.op, elapsed, opts.loop*opts.concurrent/int(1+elapsed.Seconds()))
+	fmt.Printf("%s elapsed: %s, qps: %d\n", opts.op, elapsed, rows/int(1+elapsed.Seconds()))
 
 }
 
