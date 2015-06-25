@@ -92,7 +92,7 @@ func main() {
 
 	wg.Wait()
 	elapsed := time.Since(t0)
-	fmt.Printf("%s elapsed: %s, %s: %d\n", opts.op, elapsed,
+	fmt.Printf("%s elapsed:%s, rows:%d %s:%d\n", opts.op, elapsed, rows,
 		color.Red("qps"),
 		rows/int(1+elapsed.Seconds()))
 
