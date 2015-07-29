@@ -1,0 +1,21 @@
+package demo;
+
+message DemoMsg {
+    required string clientName = 1;
+    required int32 clientId = 2;
+    optional string desc = 3;
+    repeated MsgItem items = 4;
+}
+
+enum ItemType {
+    TypeX = 0;
+    TypeY = 1;
+    TypeZ = 2;
+}
+
+message MsgItem {
+    required int32 id = 1;
+    optional string name = 2;
+    optional int32 value = 3;
+    optional ItemType type = 4;
+}
