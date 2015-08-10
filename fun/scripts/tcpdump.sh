@@ -21,3 +21,11 @@ tcpdump -w conn.pcap -Svvni eth0 'tcp[13]&7!=0 and (dst port 11211 or dst port 1
 
 # 只查看数据长度大于100的包
 tcpdump -vvvAs 1500 -n 'port 27017 and tcp[13] & 8 = 8 and greater 100'
+
+
+# less length
+# 如果数据包的长度比length 小或等于length, 则与此对应的条件表达式为真. 这与'len <= length' 的含义一致.
+
+# greater length
+# 如果数据包的长度比length 大或等于length, 则与此对应的条件表达式为真. 这与'len >= length' 的含义一致.
+tcpdump -nn -s0 -A 'port 10123 and greater 1500'

@@ -92,9 +92,13 @@ func main() {
 
 	wg.Wait()
 	elapsed := time.Since(t0)
+	dur := int(elapsed.Seconds())
+	if dur == 0 {
+		dur = 1
+	}
 	fmt.Printf("%s elapsed:%s, rows:%d %s:%d\n", opts.op, elapsed, rows,
 		color.Red("qps"),
-		rows/int(1+elapsed.Seconds()))
+		rows/dur)
 
 }
 

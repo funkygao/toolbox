@@ -5,7 +5,7 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-    "strings"
+	"strings"
 )
 
 // This example demonstrates how to inspect the AST of a Go program.
@@ -15,6 +15,11 @@ func ExampleInspect() {
 package p
 const c = 1.0
 var X = f(3.14)*2 + c
+type fooStruct struct {
+}
+
+func (this *fooStruct) bar() {
+}
 `
 
 	// Create the AST by parsing src.
@@ -60,8 +65,8 @@ func main() {
 	// Print the AST.
 	ast.Print(fset, f)
 
-    fmt.Println(strings.Repeat("=", 80))
+	fmt.Println(strings.Repeat("=", 80))
 
-    ExampleInspect()
+	ExampleInspect()
 
 }
