@@ -36,4 +36,7 @@ var myExp = myRegexp{regexp.MustCompile(`(?P<first>\d+)\.(\d+).(?P<second>\d+)`)
 
 func main() {
 	fmt.Printf("%#v", myExp.FindStringSubmatchMap("1234.5678.9"))
+
+	re := regexp.MustCompilePOSIX("a*")
+	fmt.Println(re.MatchString("dabcdd"))
 }
